@@ -19,33 +19,5 @@ class User extends BaseUser
 * @ORM\GeneratedValue(strategy="AUTO")
 */
     protected $id; 
-
-	/**
-     * @var string
-     *
-     * @ORM\Column(name="adresse", type="text")
-     */
-    private $adresse;
-
-	/**
-     * @var string
-     *
-     * @ORM\Column(name="codepostal", type="text")
-     */
-    protected $codepostal;
-
-	/**
-     * @var string
-     *
-     * @ORM\Column(name="ville", type="text")
-     */
-    protected $ville;
-
-	/**
-     * @var string
-     *
-     * @ORM\Column(name="ville", type="text")
-     */
-    protected $listemots;
 }
 

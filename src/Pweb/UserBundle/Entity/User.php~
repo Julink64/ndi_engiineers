@@ -46,6 +46,6 @@ class User extends BaseUser
      *
      * @ORM\Column(name="ville", type="text")
      */
-    protected $ville;
+    protected $listemots;
 }
 
