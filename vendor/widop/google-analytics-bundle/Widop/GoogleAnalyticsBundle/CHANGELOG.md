@@ -1,5 +1,10 @@
 # CHANGELOG
 
+### 1.1.0 (2013-09-22)
+
+ * 3602d5c - Extract business classes
+ * efcc6c9 - Add dedicated exception
+
 ### 1.0.3 (2013-09-05)
 
  * e4c3663 - [Doc] Fix profile_id explanation

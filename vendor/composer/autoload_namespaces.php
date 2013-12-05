@@ -7,7 +7,9 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Widop\\HttpAdapterBundle' => array($vendorDir . '/widop/http-adapter-bundle'),
+    'Widop\\HttpAdapter' => array($vendorDir . '/widop/http-adapter/src'),
     'Widop\\GoogleAnalyticsBundle' => array($vendorDir . '/widop/google-analytics-bundle'),
+    'Widop\\GoogleAnalytics' => array($vendorDir . '/widop/google-analytics/src'),
     'Twig_Extensions_' => array($vendorDir . '/twig/extensions/lib'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Symfony\\Bundle\\SwiftmailerBundle' => array($vendorDir . '/symfony/swiftmailer-bundle'),
