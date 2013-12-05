@@ -1,0 +1,12 @@
+{% extends "PwebMainBundle::layout.html.twig" %}
+
+{% block title %}
+  Erreur
+{% endblock %}
+
+{% block PwebMain_body %}
+
+<h1>Oops! Une erreur est survenu</h1>
+<h2>Le serveur a retourné le code d'erreur "{{ status_code }} {{ status_text }}".</h2>
+
+{% endblock %}

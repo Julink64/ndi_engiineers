@@ -1,0 +1,45 @@
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Accueil
+{% endblock %}
+ 
+{% block PwebMain_body %}
+
+  <div class="row">
+	{% for projet in projet %}
+	
+	  <div class="span4">
+	  
+	    <div class="well">
+	  
+	  	<h3>
+			{% if projet.logo is not null %}
+				<img src="{{ projet.logo }}" width="50" height="50" alt="logo" align=left/>
+			{% endif %}
+			<a href="{{ path('PwebMain_voir', {'id': projet.id}) }}">{{ projet.libelle }}</a>
+        </h3>
+        
+        <table class="table table-bordered table-striped table-condensed">
+			<tbody>
+			  <tr class="info">
+			  	<td>{{ projet.phrase }}</td>
+			  </tr>
+			</tbody>
+		</table>
+        
+        <center>
+			{% if projet.apercu is not null %}
+				<img src="{{ projet.apercu }}" align=left/>
+			{% endif %}
+        </center>
+        
+        </div>
+      
+      </div>
+    {% endfor %}
+   </div>
+
+
+
+{% endblock %}

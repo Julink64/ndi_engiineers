@@ -1,0 +1,31 @@
+{# src/Pweb/MainBundle/Resources/views/Main/modifier.html.twig #}
+ 
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Supprimer le projet
+{% endblock %}
+ 
+{% block PwebMain_body %}
+ 	<div class="well">
+  	<h2>Désirez vous supprimer ce projet ?</h2>
+	<br></br>
+	
+	<center><h3>{{ projet.libelle }}</h3></center>
+  
+	{# On met l'id du projet dans la route de l'action du formulaire #}
+	<center>
+	<form action="{{ path('PwebMain_supprimer', {'id': projet.id}) }}" method="post">
+	<br></br>
+	<a href="{{ path('PwebMain_voir', {'id': projet.id}) }}" class="btn btn-inverse btn-large">
+	  <i class="icon-chevron-left"></i>
+	  Retour au projet
+	</a>
+	
+	<input type="submit" value=" Confirmer la suppression" class="btn btn-danger btn-large" />
+	{{ form_rest(form) }}
+	</form>
+	</center>
+	</div>
+	
+{% endblock %}

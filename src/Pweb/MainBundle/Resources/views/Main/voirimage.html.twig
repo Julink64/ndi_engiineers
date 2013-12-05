@@ -1,0 +1,37 @@
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+    projets
+{% endblock %}
+{% block PwebMain_body %}
+ 	<div class="well">
+ 	<div class="row">
+    <div class="span9 offset1">
+      <table class="table table-bordered table-striped table-condensed">
+ 	<thead>
+        <tr>
+        <th><center>Image</center></th>
+        <th><center>Option</center></th>
+        </tr>
+    </thead>
+ 	{% for image in liste_images %}
+ 	<tbody>
+ 	<tr>
+ 		<td>
+    	<p align="center"><img src="{{ image.url }}" width="120" height="120" alt="projet" align="center"/></p>
+    	</td>
+    	<td>
+    	<br>
+    	<p align="center">
+    	<a href="{{ path('PwebMain_supprimerimage', {'id': image.id}) }}" class="btn btn-warning btn-small"><i class="icon-white icon-remove"></i> Supprimer</a>
+    	</p>
+    	</td>
+    </tr>
+    </tbody>
+    {% endfor %}
+   	 </table>
+    </div>
+    </div>
+    </div>
+
+{% endblock %}

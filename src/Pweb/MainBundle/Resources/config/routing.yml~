@@ -1,0 +1,99 @@
+# ------------------------------------------------------------------------------
+# ACCUEIL
+
+PwebMain_accueil:
+    path:      /
+    defaults:  { _controller: PwebMainBundle:Main:accueil }
+
+# ------------------------------------------------------------------------------
+# CV
+
+PwebMain_cv:
+    path:      /cv
+    defaults:  { _controller: PwebMainBundle:Main:cv }
+    
+    
+# ------------------------------------------------------------------------------
+# A PROPOS
+
+PwebMain_apropos:
+    path:      /apropos
+    defaults:  { _controller: PwebMainBundle:Main:apropos }
+
+# ------------------------------------------------------------------------------
+# GERER LES PROJETS
+
+PwebMain_voir:
+    path:      /projet/{id}
+    defaults:  { _controller: PwebMainBundle:Main:voir }
+    
+PwebMain_voirtout:
+    path:      /projet/
+    defaults:  { _controller: PwebMainBundle:Main:voirtout }
+    
+PwebMain_gererprojet:
+    path:      /gererprojet/
+    defaults:  { _controller: PwebMainBundle:Main:gererprojet }
+    
+PwebMain_lierimages:
+    path:      /lierimages/{id}
+    defaults:  { _controller: PwebMainBundle:Main:lierimages }
+    
+
+# ------------------------------------------------------------------------------
+# ADMINISTRATEUR. PROJET : AJOUTER, SUPPRIMER, MODIFIER
+
+PwebMain_ajouter:
+    path:      /ajouter
+    defaults:  { _controller: PwebMainBundle:Main:ajouter }
+ 
+PwebMain_modifier:
+    path:      /modifier/{id}
+    defaults:  { _controller: PwebMainBundle:Main:modifier }
+    requirements:
+        id:  \d+
+ 
+PwebMain_supprimer:
+    path:      /supprimer/{id}
+    defaults:  { _controller: PwebMainBundle:Main:supprimer }
+    requirements:
+        id:  \d+
+        
+# ------------------------------------------------------------------------------
+# GERER LES IMAGES
+
+PwebMain_ajouterimage:
+    path:      /ajouterimage
+    defaults:  { _controller: PwebMainBundle:Main:ajouterimage }
+    
+PwebMain_voirimage:
+    path:      /voirimage/
+    defaults:  { _controller: PwebMainBundle:Main:voirimage }  
+    
+PwebMain_supprimerimage:
+    path:      /supprimerimage/{id}
+    defaults:  { _controller: PwebMainBundle:Main:supprimerimage } 
+    requirements:
+        id:  \d+
+
+# ------------------------------------------------------------------------------
+# ESPACE ADMIN
+
+PwebMain_espaceadmin:
+    path:      /espaceadmin
+    defaults:  { _controller: PwebMainBundle:Main:espaceadmin }
+
+PwebMain_connecter:
+    path:      /connecter
+    defaults:  { _controller: PwebMainBundle:Main:connecter }
+
+PwebMain_deconnecter:
+    path:      /deconnecter
+    defaults:  { _controller: PwebMainBundle:Main:deconnecter }
+    
+# ------------------------------------------------------------------------------
+# STATISTIQUES
+
+PwebMain_statistiques:
+    path:      /statistiques
+    defaults:  { _controller: PwebMainBundle:Main:statistiques }

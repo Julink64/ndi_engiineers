@@ -1,0 +1,19 @@
+  {# src/Pweb/MainBundle/Resources/views/Main/ajouter.html.twig #}
+ 
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block PwebMain_body %}
+
+<div class="hero-unit">
+	<h2>
+	{{ title }}
+	</h2>  
+  {% include "PwebMainBundle:Main:formulaire.html.twig" %}
+ 
+  <p>
+	<a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i> Retour à l'accueil</a>
+  </p>
+  
+</div>
+ 
+{% endblock %}

@@ -1,0 +1,31 @@
+{# src/Pweb/MainBundle/Resources/views/Main/modifier.html.twig #}
+ 
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Modifier le projet
+{% endblock %}
+ 
+{% block PwebMain_body %}
+ <div class="well">
+  <h2>Modification du projet :</h2>
+ <br></br>
+ 
+    <center><h3>{{ projet.libelle }}</h3></center>
+  <br></br>
+	<center>
+  {% include "PwebMainBundle:Main:formulaire.html.twig" %}
+    </center>
+    <center>
+  <p>
+    <a href="{{ path('PwebMain_voir', {'id': projet.id}) }}" class="btn btn-inverse btn-small">
+      <i class="icon-chevron-left"></i>
+      Retour au projet
+    </a>
+  </p>
+    </center>
+ </div
+{% endblock %}
+  
+  
+  

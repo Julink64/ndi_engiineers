@@ -1,0 +1,38 @@
+jms_security_extra:
+    secure_all_services: false
+    expressions: true
+
+security:
+    encoders:
+        "FOS\UserBundle\Model\UserInterface": sha512
+
+    role_hierarchy:
+        ROLE_LAMBDA:       ROLE_USER
+        ROLE_ADMIN: [ROLE_LAMBDA, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        # Firewall pour les pages de connexion, inscription
+        login:
+            pattern: ^/(login$|register|resetting)
+            anonymous: true
+        
+        # Firewall principal
+        main:
+            pattern: ^/ 
+            form_login:
+                provider: fos_userbundle
+                remember_me: true 
+            remember_me:
+                key: %secret% 
+            anonymous: true
+            logout: true
+
+    access_control:
+        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }

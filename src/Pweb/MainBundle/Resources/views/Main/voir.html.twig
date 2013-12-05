@@ -1,0 +1,74 @@
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+    Projets
+{% endblock %}
+
+{% block PwebMain_body %}
+
+<div class="well">
+    <h1>{{ projet.libelle }} </h1>
+    <p><span class="label label-info">{{ projet.categorie }}</span>
+    <span class="label label-info">{{ projet.langage }}</span></p>
+    
+	<br>
+	<div id="myCarousel" class="carousel slide">
+		<center>
+    	<div class="carousel-inner">
+    	{% set i=1 %}
+  		{% for image in liste_images %}
+  		{% if i == 1 %}
+    	<div class="item active"> <img alt="{{ image.alt }}" src="{{ image.url }}"/>
+      		<div class="carousel-caption">
+        	<p>{{ image.commentaire }}</p>
+      		</div>
+    	</div>
+    	{% else %}
+    	<div class="item"> <img alt="{{ image.alt }}" src="{{ image.url }}"/>
+      		<div class="carousel-caption">
+        	<p>{{ image.commentaire }}</p>
+      		</div>
+    	</div>
+    	{% endif %}
+    	{% set i=i+1 %}
+    	{% endfor %}
+    	</div>
+    	</center>
+    	<a class="carousel-control left" data-slide="prev" href="#myCarousel">‹</a> 
+    	<a class="carousel-control right" data-slide="next" href="#myCarousel">›</a>
+    </div>
+	<br></br>
+	<p> {{ projet.description|raw }} </p>
+	<br></br>
+	{% if projet.fichier != "/Symfony_projet/MSW_symf/web/projets/fichiers/NULL" %}
+    <center>
+    <a href="{{ projet.fichier }}" class="btn btn-info"><i class="icon-white icon-download-alt"></i> Télécharger le code source</a>
+    </center>
+    {% endif %}
+</div>
+
+<center>
+  <p>
+  {% if is_granted('ROLE_ADMIN') %}
+    <a href="{{ path('PwebMain_modifier', {'id': projet.id}) }}" class="btn">
+      <i class="icon-edit"></i>
+      Modifier le projet
+    </a>
+    <a href="{{ path('PwebMain_supprimer', {'id': projet.id}) }}" class="btn">
+      <i class="icon-trash"></i>
+      Supprimer le projet
+    </a>
+  {% endif %}
+  </p>
+</center>
+
+<script src="../bootstrap/js/bootstrap-carousel.js"></script>
+<script src="../bootstrap/js/bootstrap-transition.js"></script>
+<script>
+$(function (){
+    $('.carousel').carousel();
+});
+</script>
+
+  
+{% endblock %}

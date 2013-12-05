@@ -1,0 +1,15 @@
+{% extends "::layout.html.twig" %}
+ 
+{% block title %}
+  Accueil
+{% endblock %}
+ 
+{% block body %}
+ 
+  {# On définit un sous-titre commun à toutes les pages du bundle, par exemple #}
+  
+  {# On définit un nouveau bloc, que les vues du bundle pourront remplir #}
+  {% block PwebMain_body %}
+  {% endblock %}
+ 
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+    projets
+{% endblock %}
+{% block PwebMain_body %}
+ 	<div class="well">
+ 	<div class="row">
+    <div class="span9 offset1">
+      <table class="table table-bordered table-striped table-condensed">
+ 	<thead>
+        <tr>
+        <th><center>Identifiant</center></th>
+        <th><center>Description</center></th>
+        <th><center>Options</center></th>
+        </tr>
+    </thead>
+ 	{% for projet in liste_projets %}
+ 	<tbody>
+ 	<tr>
+ 		<td>
+ 		<br>
+    	<p align="center"> {{ projet.id }} </p>
+    	</td>
+    	<td>
+    	<br>
+    	<p align="center"> {{ projet.libelle }} </p>
+    	<p align="center"> {{ projet.langage }} </p>
+    	</td>
+    	<td>
+    	<br>
+    	<p align="center">
+    	<a href="{{ path('PwebMain_supprimer', {'id': projet.id}) }}" class="btn btn-warning btn-small"><i class="icon-remove"></i> Supprimer</a>
+    	</p>
+    	</td>
+    	<td>
+    	<br>
+    	<p align="center">
+    	<a href="{{ path('PwebMain_lierimages', {'id': projet.id}) }}" class="btn btn-info btn-small"><i class="icon-th-list"></i> Ajouter des images</a>
+    	</td>
+    	
+    </tr>
+    </tbody>
+    {% endfor %}
+   	 </table>
+    </div>
+    </div>
+    </div>
+
+{% endblock %}
