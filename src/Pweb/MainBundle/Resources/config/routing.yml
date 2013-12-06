@@ -98,6 +98,10 @@ PwebMain_deconnecter:
     path:      /deconnecter
     defaults:  { _controller: PwebMainBundle:Main:deconnecter }
     
+PwebMain_enregistrer:
+    path:      /enregistrer
+    defaults:  { _controller: PwebMainBundle:Main:enregistrer }
+    
 # ------------------------------------------------------------------------------
 # STATISTIQUES
 
