@@ -20,7 +20,7 @@
       	<p> </p>
     <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i> Accueil</a>
     <a href="{{ path('PwebMain_connecter') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> Se connecter</a>
-    <a href="{{ path('PwebMain_voirtout') }}" class="btn btn-info btn-large"><i class="icon-white icon-th-list"></i> Page 1</a>
+    <a href="{{ path('PwebMain_utilisateur') }}" class="btn btn-info btn-large"><i class="icon-white icon-th-list"></i> Espace utilisateur</a>
     <a href="{{ path('PwebMain_cv') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> Page 2</a>
     <a href="{{ path('PwebMain_apropos') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> Page 3</a>
      	</div>
@@ -52,6 +52,18 @@
   		       </ul>
     		</div>
 		  </div>
+		</div>
+		  {% endif %}
+		{% if is_granted('ROLE_LAMBDA') %}
+		  
+   		  <div class="navbar">
+  			<div class="navbar-inner">
+  			  <div class="container">
+     			 <ul class="nav">
+			<li> <a href="{{ path('PwebMain_deconnecter') }}">Mon espace utilisateur</a> </li>
+			</ul>
+     			</div>
+			</div>
 		</div>
 		  {% endif %}
 		  
