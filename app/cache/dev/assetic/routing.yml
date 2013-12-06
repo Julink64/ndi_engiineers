@@ -2,4 +2,4 @@ _assetic:
     resource: .
     type: assetic
 _app:
-    resource: /home/clement-ensiie/NI/ndi_engiineers/app/config/routing_dev.yml
+    resource: /var/www/NDI/app/config/routing_dev.yml

@@ -152,6 +152,11 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             return array (  '_controller' => 'Pweb\\MainBundle\\Controller\\MainController::aproposAction',  '_route' => 'PwebMain_apropos',);
         }
 
+        // PwebMain_utilisateur
+        if ($pathinfo === '/utilisateur') {
+            return array (  '_controller' => 'Pweb\\MainBundle\\Controller\\MainController::utilisateurAction',  '_route' => 'PwebMain_utilisateur',);
+        }
+
         if (0 === strpos($pathinfo, '/projet')) {
             // PwebMain_voir
             if (preg_match('#^/projet/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
@@ -230,6 +235,11 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         // PwebMain_deconnecter
         if ($pathinfo === '/deconnecter') {
             return array (  '_controller' => 'Pweb\\MainBundle\\Controller\\MainController::deconnecterAction',  '_route' => 'PwebMain_deconnecter',);
+        }
+
+        // PwebMain_enregistrer
+        if ($pathinfo === '/enregistrer') {
+            return array (  '_controller' => 'Pweb\\MainBundle\\Controller\\MainController::enregistrerAction',  '_route' => 'PwebMain_enregistrer',);
         }
 
         // PwebMain_statistiques

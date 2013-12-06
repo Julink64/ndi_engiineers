@@ -113,7 +113,7 @@ return true;
 }
 public function getId()
 {
-if (!$this->started) {
+if (!$this->started && !$this->closed) {
 return''; }
 return $this->saveHandler->getId();
 }
@@ -147,6 +147,7 @@ $_SESSION = $backup;
 } else {
 session_start();
 }
+$this->loadSession();
 }
 return $ret;
 }
@@ -157,6 +158,7 @@ if (!$this->saveHandler->isWrapper() && !$this->getSaveHandler()->isSessionHandl
 $this->saveHandler->setActive(false);
 }
 $this->closed = true;
+$this->started = false;
 }
 public function clear()
 {
@@ -327,6 +329,18 @@ throw new \LogicException('Cannot change the name of an active session');
 }
 session_name($name);
 }
+}
+}
+namespace
+{
+interface SessionHandlerInterface
+{
+public function open($savePath, $sessionName);
+public function close();
+public function read($sessionId);
+public function write($sessionId, $data);
+public function destroy($sessionId);
+public function gc($lifetime);
 }
 }
 namespace Symfony\Component\HttpFoundation\Session\Storage\Proxy
@@ -1213,7 +1227,7 @@ return $this->matcher = new $this->options['matcher_class']($this->getRouteColle
 }
 $class = $this->options['matcher_cache_class'];
 $cache = new ConfigCache($this->options['cache_dir'].'/'.$class.'.php', $this->options['debug']);
-if (!$cache->isFresh($class)) {
+if (!$cache->isFresh()) {
 $dumper = new $this->options['matcher_dumper_class']($this->getRouteCollection());
 $options = array('class'=> $class,'base_class'=> $this->options['matcher_base_class'],
 );
@@ -1232,7 +1246,7 @@ $this->generator = new $this->options['generator_class']($this->getRouteCollecti
 } else {
 $class = $this->options['generator_cache_class'];
 $cache = new ConfigCache($this->options['cache_dir'].'/'.$class.'.php', $this->options['debug']);
-if (!$cache->isFresh($class)) {
+if (!$cache->isFresh()) {
 $dumper = new $this->options['generator_dumper_class']($this->getRouteCollection());
 $options = array('class'=> $class,'base_class'=> $this->options['generator_base_class'],
 );
@@ -1460,22 +1474,19 @@ if (!is_string($value)) {
 return $value;
 }
 $container = $this->container;
-$escapedValue = preg_replace_callback('/%%|%([^%\s]+)%/', function ($match) use ($container, $value) {
+$escapedValue = preg_replace_callback('/%%|%([^%\s]++)%/', function ($match) use ($container, $value) {
 if (!isset($match[1])) {
 return'%%';
 }
-$key = strtolower($match[1]);
-if (!$container->hasParameter($key)) {
-throw new ParameterNotFoundException($key);
-}
-$resolved = $container->getParameter($key);
+$resolved = $container->getParameter($match[1]);
 if (is_string($resolved) || is_numeric($resolved)) {
 return (string) $resolved;
 }
-throw new RuntimeException(sprintf('A string value must be composed of strings and/or numbers,'.'but found parameter "%s" of type %s inside string value "%s".',
-$key,
-gettype($resolved),
-$value)
+throw new RuntimeException(sprintf('The container parameter "%s", used in the route configuration value "%s", '.'must be a string or numeric, but it is of type %s.',
+$match[1],
+$value,
+gettype($resolved)
+)
 );
 }, $value);
 return str_replace('%%','%', $escapedValue);
@@ -1846,15 +1857,22 @@ $authorizationHeader = $this->parameters['HTTP_AUTHORIZATION'];
 } elseif (isset($this->parameters['REDIRECT_HTTP_AUTHORIZATION'])) {
 $authorizationHeader = $this->parameters['REDIRECT_HTTP_AUTHORIZATION'];
 }
-if ((null !== $authorizationHeader) && (0 === stripos($authorizationHeader,'basic'))) {
+if (null !== $authorizationHeader) {
+if (0 === stripos($authorizationHeader,'basic')) {
 $exploded = explode(':', base64_decode(substr($authorizationHeader, 6)));
 if (count($exploded) == 2) {
 list($headers['PHP_AUTH_USER'], $headers['PHP_AUTH_PW']) = $exploded;
+}
+} elseif (empty($this->parameters['PHP_AUTH_DIGEST']) && (0 === stripos($authorizationHeader,'digest'))) {
+$headers['PHP_AUTH_DIGEST'] = $authorizationHeader;
+$this->parameters['PHP_AUTH_DIGEST'] = $authorizationHeader;
 }
 }
 }
 if (isset($headers['PHP_AUTH_USER'])) {
 $headers['AUTHORIZATION'] ='Basic '.base64_encode($headers['PHP_AUTH_USER'].':'.$headers['PHP_AUTH_PW']);
+} elseif (isset($headers['PHP_AUTH_DIGEST'])) {
+$headers['AUTHORIZATION'] = $headers['PHP_AUTH_DIGEST'];
 }
 return $headers;
 }
@@ -1985,11 +2003,19 @@ $request = array();
 $query = $parameters;
 break;
 }
+$queryString ='';
 if (isset($components['query'])) {
 parse_str(html_entity_decode($components['query']), $qs);
+if ($query) {
 $query = array_replace($qs, $query);
-}
 $queryString = http_build_query($query,'','&');
+} else {
+$query = $qs;
+$queryString = $components['query'];
+}
+} elseif ($query) {
+$queryString = http_build_query($query,'','&');
+}
 $server['REQUEST_URI'] = $components['path'].(''!== $queryString ?'?'.$queryString :'');
 $server['QUERY_STRING'] = $queryString;
 return new static($query, $request, array(), $cookies, $files, $server, $content);
@@ -2025,8 +2051,11 @@ $dup->baseUrl = null;
 $dup->basePath = null;
 $dup->method = null;
 $dup->format = null;
-if (!$dup->get('_format')) {
-$dup->setRequestFormat($this->getRequestFormat());
+if (!$dup->get('_format') && $this->get('_format')) {
+$dup->attributes->set('_format', $this->get('_format'));
+}
+if (!$dup->getRequestFormat(null)) {
+$dup->setRequestFormat($format = $this->getRequestFormat(null));
 }
 return $dup;
 }
@@ -2062,7 +2091,7 @@ $_SERVER['HTTP_'.$key] = implode(', ', $value);
 }
 }
 $request = array('g'=> $_GET,'p'=> $_POST,'c'=> $_COOKIE);
-$requestOrder = ini_get('request_order') ?: ini_get('variable_order');
+$requestOrder = ini_get('request_order') ?: ini_get('variables_order');
 $requestOrder = preg_replace('#[^cgp]#','', strtolower($requestOrder)) ?:'gp';
 $_REQUEST = array();
 foreach (str_split($requestOrder) as $order) {
@@ -2208,6 +2237,12 @@ if (self::$trustedHeaders[self::HEADER_CLIENT_PROTO] &&'https'=== $this->headers
 return 443;
 }
 }
+if ($host = $this->headers->get('HOST')) {
+if (false !== $pos = strrpos($host,':')) {
+return intval(substr($host, $pos + 1));
+}
+return'https'=== $this->getScheme() ? 443 : 80;
+}
 return $this->server->get('SERVER_PORT');
 }
 public function getUser()
@@ -2266,7 +2301,7 @@ return''=== $qs ? null : $qs;
 public function isSecure()
 {
 if (self::$trustProxy && self::$trustedHeaders[self::HEADER_CLIENT_PROTO] && $proto = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_PROTO])) {
-return in_array(strtolower($proto), array('https','on','1'));
+return in_array(strtolower(current(explode(',', $proto))), array('https','on','ssl','1'));
 }
 return'on'== strtolower($this->server->get('HTTPS')) || 1 == $this->server->get('HTTPS');
 }
@@ -2543,7 +2578,7 @@ do {
 $seg = $segs[$index];
 $baseUrl ='/'.$seg.$baseUrl;
 ++$index;
-} while (($last > $index) && (false !== ($pos = strpos($path, $baseUrl))) && (0 != $pos));
+} while ($last > $index && (false !== $pos = strpos($path, $baseUrl)) && 0 != $pos);
 }
 $requestUri = $this->getRequestUri();
 if ($baseUrl && false !== $prefix = $this->getUrlencodedPrefix($requestUri, $baseUrl)) {
@@ -2553,14 +2588,14 @@ if ($baseUrl && false !== $prefix = $this->getUrlencodedPrefix($requestUri, dirn
 return rtrim($prefix,'/');
 }
 $truncatedRequestUri = $requestUri;
-if (($pos = strpos($requestUri,'?')) !== false) {
+if (false !== $pos = strpos($requestUri,'?')) {
 $truncatedRequestUri = substr($requestUri, 0, $pos);
 }
 $basename = basename($baseUrl);
 if (empty($basename) || !strpos(rawurldecode($truncatedRequestUri), $basename)) {
 return'';
 }
-if ((strlen($requestUri) >= strlen($baseUrl)) && ((false !== ($pos = strpos($requestUri, $baseUrl))) && ($pos !== 0))) {
+if (strlen($requestUri) >= strlen($baseUrl) && (false !== $pos = strpos($requestUri, $baseUrl)) && $pos !== 0) {
 $baseUrl = substr($requestUri, 0, $pos + strlen($baseUrl));
 }
 return rtrim($baseUrl,'/');
@@ -2592,7 +2627,7 @@ $pathInfo ='/';
 if ($pos = strpos($requestUri,'?')) {
 $requestUri = substr($requestUri, 0, $pos);
 }
-if ((null !== $baseUrl) && (false === ($pathInfo = substr($requestUri, strlen($baseUrl))))) {
+if (null !== $baseUrl && false === $pathInfo = substr($requestUri, strlen($baseUrl))) {
 return'/';
 } elseif (null === $baseUrl) {
 return $requestUri;
@@ -2719,7 +2754,7 @@ $headers->set('Content-Type', $mimeType);
 $charset = $this->charset ?:'UTF-8';
 if (!$headers->has('Content-Type')) {
 $headers->set('Content-Type','text/html; charset='.$charset);
-} elseif (0 === strpos($headers->get('Content-Type'),'text/') && false === strpos($headers->get('Content-Type'),'charset')) {
+} elseif (0 === stripos($headers->get('Content-Type'),'text/') && false === stripos($headers->get('Content-Type'),'charset')) {
 $headers->set('Content-Type', $headers->get('Content-Type').'; charset='.$charset);
 }
 if ($headers->has('Transfer-Encoding')) {
@@ -3656,7 +3691,7 @@ $request->attributes->set('_route_params', $parameters);
 $message = sprintf('No route found for "%s %s"', $request->getMethod(), $request->getPathInfo());
 throw new NotFoundHttpException($message, $e);
 } catch (MethodNotAllowedException $e) {
-$message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathInfo(), strtoupper(implode(', ', $e->getAllowedMethods())));
+$message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathInfo(), implode(', ', $e->getAllowedMethods()));
 throw new MethodNotAllowedHttpException($e->getAllowedMethods(), $message, $e);
 }
 }
@@ -4497,7 +4532,7 @@ namespace
 {
 class Twig_Environment
 {
-const VERSION ='1.13.2';
+const VERSION ='1.14.2';
 protected $charset;
 protected $loader;
 protected $debug;
@@ -4524,6 +4559,7 @@ protected $templateClassPrefix ='__TwigTemplate_';
 protected $functionCallbacks;
 protected $filterCallbacks;
 protected $staging;
+protected $templateClasses;
 public function __construct(Twig_LoaderInterface $loader = null, $options = array())
 {
 if (null !== $loader) {
@@ -4540,6 +4576,7 @@ $this->runtimeInitialized = false;
 $this->setCache($options['cache']);
 $this->functionCallbacks = array();
 $this->filterCallbacks = array();
+$this->templateClasses = array();
 $this->addExtension(new Twig_Extension_Core());
 $this->addExtension(new Twig_Extension_Escaper($options['autoescape']));
 $this->addExtension(new Twig_Extension_Optimizer($options['optimizations']));
@@ -4608,7 +4645,12 @@ return $this->getCache().'/'.substr($class, 0, 2).'/'.substr($class, 2, 2).'/'.s
 }
 public function getTemplateClass($name, $index = null)
 {
-return $this->templateClassPrefix.md5($this->getLoader()->getCacheKey($name)).(null === $index ?'':'_'.$index);
+$suffix = null === $index ?'':'_'.$index;
+$cls = $name.$suffix;
+if (isset($this->templateClasses[$cls])) {
+return $this->templateClasses[$cls];
+}
+return $this->templateClasses[$cls] = $this->templateClassPrefix.hash('sha256', $this->getLoader()->getCacheKey($name)).$suffix;
 }
 public function getTemplateClassPrefix()
 {
@@ -4713,9 +4755,9 @@ public function setParser(Twig_ParserInterface $parser)
 {
 $this->parser = $parser;
 }
-public function parse(Twig_TokenStream $tokens)
+public function parse(Twig_TokenStream $stream)
 {
-return $this->getParser()->parse($tokens);
+return $this->getParser()->parse($stream);
 }
 public function getCompiler()
 {
@@ -4740,7 +4782,7 @@ return $this->compile($this->parse($this->tokenize($source, $name)));
 $e->setTemplateFile($name);
 throw $e;
 } catch (Exception $e) {
-throw new Twig_Error_Runtime(sprintf('An exception has been thrown during the compilation of a template ("%s").', $e->getMessage()), -1, $name, $e);
+throw new Twig_Error_Syntax(sprintf('An exception has been thrown during the compilation of a template ("%s").', $e->getMessage()), -1, $name, $e);
 }
 }
 public function setLoader(Twig_LoaderInterface $loader)
@@ -5121,7 +5163,7 @@ throw new RuntimeException(sprintf("Unable to create the cache directory (%s).",
 } elseif (!is_writable($dir)) {
 throw new RuntimeException(sprintf("Unable to write in the cache directory (%s).", $dir));
 }
-$tmpFile = tempnam(dirname($file), basename($file));
+$tmpFile = tempnam($dir, basename($file));
 if (false !== @file_put_contents($tmpFile, $content)) {
 if (@rename($tmpFile, $file) || (@copy($tmpFile, $file) && unlink($tmpFile))) {
 @chmod($file, 0666 & ~umask());
@@ -5187,13 +5229,22 @@ return array();
 namespace
 {
 if (!defined('ENT_SUBSTITUTE')) {
-define('ENT_SUBSTITUTE', 8);
+define('ENT_SUBSTITUTE', 0);
 }
 class Twig_Extension_Core extends Twig_Extension
 {
 protected $dateFormats = array('F j, Y H:i','%d days');
 protected $numberFormat = array(0,'.',',');
 protected $timezone = null;
+protected $escapers = array();
+public function setEscaper($strategy, $callable)
+{
+$this->escapers[$strategy] = $callable;
+}
+public function getEscapers()
+{
+return $this->escapers;
+}
 public function setDateFormat($format = null, $dateIntervalFormat = null)
 {
 if (null !== $format) {
@@ -5304,9 +5355,11 @@ new Twig_SimpleTest('even', null, array('node_class'=>'Twig_Node_Expression_Test
 new Twig_SimpleTest('odd', null, array('node_class'=>'Twig_Node_Expression_Test_Odd')),
 new Twig_SimpleTest('defined', null, array('node_class'=>'Twig_Node_Expression_Test_Defined')),
 new Twig_SimpleTest('sameas', null, array('node_class'=>'Twig_Node_Expression_Test_Sameas')),
+new Twig_SimpleTest('same as', null, array('node_class'=>'Twig_Node_Expression_Test_Sameas')),
 new Twig_SimpleTest('none', null, array('node_class'=>'Twig_Node_Expression_Test_Null')),
 new Twig_SimpleTest('null', null, array('node_class'=>'Twig_Node_Expression_Test_Null')),
 new Twig_SimpleTest('divisibleby', null, array('node_class'=>'Twig_Node_Expression_Test_Divisibleby')),
+new Twig_SimpleTest('divisible by', null, array('node_class'=>'Twig_Node_Expression_Test_Divisibleby')),
 new Twig_SimpleTest('constant', null, array('node_class'=>'Twig_Node_Expression_Test_Constant')),
 new Twig_SimpleTest('empty','twig_test_empty'),
 new Twig_SimpleTest('iterable','twig_test_iterable'),
@@ -5317,30 +5370,40 @@ public function getOperators()
 return array(
 array('not'=> array('precedence'=> 50,'class'=>'Twig_Node_Expression_Unary_Not'),'-'=> array('precedence'=> 500,'class'=>'Twig_Node_Expression_Unary_Neg'),'+'=> array('precedence'=> 500,'class'=>'Twig_Node_Expression_Unary_Pos'),
 ),
-array('or'=> array('precedence'=> 10,'class'=>'Twig_Node_Expression_Binary_Or','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'and'=> array('precedence'=> 15,'class'=>'Twig_Node_Expression_Binary_And','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'b-or'=> array('precedence'=> 16,'class'=>'Twig_Node_Expression_Binary_BitwiseOr','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'b-xor'=> array('precedence'=> 17,'class'=>'Twig_Node_Expression_Binary_BitwiseXor','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'b-and'=> array('precedence'=> 18,'class'=>'Twig_Node_Expression_Binary_BitwiseAnd','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'=='=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_Equal','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'!='=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_NotEqual','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'<'=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_Less','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'>'=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_Greater','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'>='=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_GreaterEqual','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'<='=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_LessEqual','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'not in'=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_NotIn','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'in'=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_In','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'..'=> array('precedence'=> 25,'class'=>'Twig_Node_Expression_Binary_Range','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'+'=> array('precedence'=> 30,'class'=>'Twig_Node_Expression_Binary_Add','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'-'=> array('precedence'=> 30,'class'=>'Twig_Node_Expression_Binary_Sub','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'~'=> array('precedence'=> 40,'class'=>'Twig_Node_Expression_Binary_Concat','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'*'=> array('precedence'=> 60,'class'=>'Twig_Node_Expression_Binary_Mul','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'/'=> array('precedence'=> 60,'class'=>'Twig_Node_Expression_Binary_Div','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'//'=> array('precedence'=> 60,'class'=>'Twig_Node_Expression_Binary_FloorDiv','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'%'=> array('precedence'=> 60,'class'=>'Twig_Node_Expression_Binary_Mod','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'is'=> array('precedence'=> 100,'callable'=> array($this,'parseTestExpression'),'associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'is not'=> array('precedence'=> 100,'callable'=> array($this,'parseNotTestExpression'),'associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'**'=> array('precedence'=> 200,'class'=>'Twig_Node_Expression_Binary_Power','associativity'=> Twig_ExpressionParser::OPERATOR_RIGHT),
+array('or'=> array('precedence'=> 10,'class'=>'Twig_Node_Expression_Binary_Or','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'and'=> array('precedence'=> 15,'class'=>'Twig_Node_Expression_Binary_And','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'b-or'=> array('precedence'=> 16,'class'=>'Twig_Node_Expression_Binary_BitwiseOr','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'b-xor'=> array('precedence'=> 17,'class'=>'Twig_Node_Expression_Binary_BitwiseXor','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'b-and'=> array('precedence'=> 18,'class'=>'Twig_Node_Expression_Binary_BitwiseAnd','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'=='=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_Equal','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'!='=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_NotEqual','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'<'=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_Less','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'>'=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_Greater','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'>='=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_GreaterEqual','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'<='=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_LessEqual','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'not in'=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_NotIn','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'in'=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_In','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'matches'=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_Matches','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'starts with'=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_StartsWith','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'ends with'=> array('precedence'=> 20,'class'=>'Twig_Node_Expression_Binary_EndsWith','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'..'=> array('precedence'=> 25,'class'=>'Twig_Node_Expression_Binary_Range','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'+'=> array('precedence'=> 30,'class'=>'Twig_Node_Expression_Binary_Add','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'-'=> array('precedence'=> 30,'class'=>'Twig_Node_Expression_Binary_Sub','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'~'=> array('precedence'=> 40,'class'=>'Twig_Node_Expression_Binary_Concat','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'*'=> array('precedence'=> 60,'class'=>'Twig_Node_Expression_Binary_Mul','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'/'=> array('precedence'=> 60,'class'=>'Twig_Node_Expression_Binary_Div','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'//'=> array('precedence'=> 60,'class'=>'Twig_Node_Expression_Binary_FloorDiv','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'%'=> array('precedence'=> 60,'class'=>'Twig_Node_Expression_Binary_Mod','associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'is'=> array('precedence'=> 100,'callable'=> array($this,'parseTestExpression'),'associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'is not'=> array('precedence'=> 100,'callable'=> array($this,'parseNotTestExpression'),'associativity'=> Twig_ExpressionParser::OPERATOR_LEFT),'**'=> array('precedence'=> 200,'class'=>'Twig_Node_Expression_Binary_Power','associativity'=> Twig_ExpressionParser::OPERATOR_RIGHT),
 ),
 );
 }
-public function parseNotTestExpression(Twig_Parser $parser, $node)
+public function parseNotTestExpression(Twig_Parser $parser, Twig_NodeInterface $node)
 {
 return new Twig_Node_Expression_Unary_Not($this->parseTestExpression($parser, $node), $parser->getCurrentToken()->getLine());
 }
-public function parseTestExpression(Twig_Parser $parser, $node)
+public function parseTestExpression(Twig_Parser $parser, Twig_NodeInterface $node)
 {
 $stream = $parser->getStream();
 $name = $stream->expect(Twig_Token::NAME_TYPE)->getValue();
+$class = $this->getTestNodeClass($parser, $name, $node->getLine());
 $arguments = null;
 if ($stream->test(Twig_Token::PUNCTUATION_TYPE,'(')) {
 $arguments = $parser->getExpressionParser()->parseArguments(true);
 }
-$class = $this->getTestNodeClass($parser, $name, $node->getLine());
 return new $class($node, $name, $arguments, $parser->getCurrentToken()->getLine());
 }
 protected function getTestNodeClass(Twig_Parser $parser, $name, $line)
 {
 $env = $parser->getEnvironment();
 $testMap = $env->getTests();
-if (!isset($testMap[$name])) {
+$testName = null;
+if (isset($testMap[$name])) {
+$testName = $name;
+} elseif ($parser->getStream()->test(Twig_Token::NAME_TYPE)) {
+$name = $name.' '.$parser->getCurrentToken()->getValue();
+if (isset($testMap[$name])) {
+$parser->getStream()->next();
+$testName = $name;
+}
+}
+if (null === $testName) {
 $message = sprintf('The test "%s" does not exist', $name);
 if ($alternatives = $env->computeAlternatives($name, array_keys($env->getTests()))) {
 $message = sprintf('%s. Did you mean "%s"', $message, implode('", "', $alternatives));
@@ -5372,7 +5435,7 @@ return mt_rand();
 if (is_int($values) || is_float($values)) {
 return $values < 0 ? mt_rand($values, 0) : mt_rand(0, $values);
 }
-if ($values instanceof Traversable) {
+if (is_object($values) && $values instanceof Traversable) {
 $values = iterator_to_array($values);
 } elseif (is_string($values)) {
 if (''=== $values) {
@@ -5426,12 +5489,14 @@ $defaultTimezone = new DateTimeZone($timezone);
 } else {
 $defaultTimezone = $timezone;
 }
-if ($date instanceof DateTime) {
-$date = clone $date;
+if ($date instanceof DateTime || $date instanceof DateTimeInterface) {
+$returningDate = new DateTime($date->format('c'));
 if (false !== $timezone) {
-$date->setTimezone($defaultTimezone);
+$returningDate->setTimezone($defaultTimezone);
+} else {
+$returningDate->setTimezone($date->getTimezone());
 }
-return $date;
+return $returningDate;
 }
 $asString = (string) $date;
 if (ctype_digit($asString) || (!empty($asString) &&'-'=== $asString[0] && ctype_digit(substr($asString, 1)))) {
@@ -5503,7 +5568,7 @@ return array_merge($arr1, $arr2);
 }
 function twig_slice(Twig_Environment $env, $item, $start, $length = null, $preserveKeys = false)
 {
-if ($item instanceof Traversable) {
+if (is_object($item) && $item instanceof Traversable) {
 $item = iterator_to_array($item, false);
 }
 if (is_array($item)) {
@@ -5527,7 +5592,7 @@ return is_string($elements) ? $elements[0] : current($elements);
 }
 function twig_join_filter($value, $glue ='')
 {
-if ($value instanceof Traversable) {
+if (is_object($value) && $value instanceof Traversable) {
 $value = iterator_to_array($value, false);
 }
 return implode($glue, (array) $value);
@@ -5592,7 +5657,7 @@ if (!strlen($value)) {
 return empty($compare);
 }
 return false !== strpos($compare, (string) $value);
-} elseif ($compare instanceof Traversable) {
+} elseif (is_object($compare) && $compare instanceof Traversable) {
 return in_array($value, iterator_to_array($compare, false), is_object($value));
 }
 return false;
@@ -5614,8 +5679,15 @@ $charset = $env->getCharset();
 }
 switch ($strategy) {
 case'html':
-static $htmlspecialcharsCharsets = array('ISO-8859-1'=> true,'ISO8859-1'=> true,'ISO-8859-15'=> true,'ISO8859-15'=> true,'utf-8'=> true,'UTF-8'=> true,'CP866'=> true,'IBM866'=> true,'866'=> true,'CP1251'=> true,'WINDOWS-1251'=> true,'WIN-1251'=> true,'1251'=> true,'CP1252'=> true,'WINDOWS-1252'=> true,'1252'=> true,'KOI8-R'=> true,'KOI8-RU'=> true,'KOI8R'=> true,'BIG5'=> true,'950'=> true,'GB2312'=> true,'936'=> true,'BIG5-HKSCS'=> true,'SHIFT_JIS'=> true,'SJIS'=> true,'932'=> true,'EUC-JP'=> true,'EUCJP'=> true,'ISO8859-5'=> true,'ISO-8859-5'=> true,'MACROMAN'=> true,
+static $htmlspecialcharsCharsets;
+if (null === $htmlspecialcharsCharsets) {
+if ('hiphop'=== substr(PHP_VERSION, -6)) {
+$htmlspecialcharsCharsets = array('utf-8'=> true,'UTF-8'=> true);
+} else {
+$htmlspecialcharsCharsets = array('ISO-8859-1'=> true,'ISO8859-1'=> true,'ISO-8859-15'=> true,'ISO8859-15'=> true,'utf-8'=> true,'UTF-8'=> true,'CP866'=> true,'IBM866'=> true,'866'=> true,'CP1251'=> true,'WINDOWS-1251'=> true,'WIN-1251'=> true,'1251'=> true,'CP1252'=> true,'WINDOWS-1252'=> true,'1252'=> true,'KOI8-R'=> true,'KOI8-RU'=> true,'KOI8R'=> true,'BIG5'=> true,'950'=> true,'GB2312'=> true,'936'=> true,'BIG5-HKSCS'=> true,'SHIFT_JIS'=> true,'SJIS'=> true,'932'=> true,'EUC-JP'=> true,'EUCJP'=> true,'ISO8859-5'=> true,'ISO-8859-5'=> true,'MACROMAN'=> true,
 );
+}
+}
 if (isset($htmlspecialcharsCharsets[$charset])) {
 return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, $charset);
 }
@@ -5668,7 +5740,15 @@ return str_replace('%7E','~', rawurlencode($string));
 }
 return rawurlencode($string);
 default:
-throw new Twig_Error_Runtime(sprintf('Invalid escaping strategy "%s" (valid ones: html, js, url, css, and html_attr).', $strategy));
+static $escapers;
+if (null === $escapers) {
+$escapers = $env->getExtension('core')->getEscapers();
+}
+if (isset($escapers[$strategy])) {
+return call_user_func($escapers[$strategy], $env, $string, $charset);
+}
+$validStrategies = implode(', ', array_merge(array('html','js','url','css','html_attr'), array_keys($escapers)));
+throw new Twig_Error_Runtime(sprintf('Invalid escaping strategy "%s" (valid ones: %s).', $strategy, $validStrategies));
 }
 }
 function twig_escape_filter_is_safe(Twig_Node $filterArgs)
@@ -5842,17 +5922,19 @@ return constant($constant);
 }
 function twig_array_batch($items, $size, $fill = null)
 {
-if ($items instanceof Traversable) {
+if (is_object($items) && $items instanceof Traversable) {
 $items = iterator_to_array($items, false);
 }
 $size = ceil($size);
 $result = array_chunk($items, $size, true);
 if (null !== $fill) {
 $last = count($result) - 1;
+if ($fillCount = $size - count($result[$last])) {
 $result[$last] = array_merge(
 $result[$last],
-array_fill(0, $size - count($result[$last]), $fill)
+array_fill(0, $fillCount, $fill)
 );
+}
 }
 return $result;
 }
@@ -6025,12 +6107,23 @@ throw new Twig_Error_Runtime(sprintf('The template has no parent and no traits d
 public function displayBlock($name, array $context, array $blocks = array())
 {
 $name = (string) $name;
+$template = null;
 if (isset($blocks[$name])) {
-$b = $blocks;
-unset($b[$name]);
-call_user_func($blocks[$name], $context, $b);
+$template = $blocks[$name][0];
+$block = $blocks[$name][1];
+unset($blocks[$name]);
 } elseif (isset($this->blocks[$name])) {
-call_user_func($this->blocks[$name], $context, $blocks);
+$template = $this->blocks[$name][0];
+$block = $this->blocks[$name][1];
+}
+if (null !== $template) {
+try {
+$template->$block($context, $blocks);
+} catch (Twig_Error $e) {
+throw $e;
+} catch (Exception $e) {
+throw new Twig_Error_Runtime(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, $template->getTemplateName(), $e);
+}
 } elseif (false !== $parent = $this->getParent($context)) {
 $parent->displayBlock($name, $context, array_merge($this->blocks, $blocks));
 }
@@ -6091,7 +6184,7 @@ $e->guess();
 }
 throw $e;
 } catch (Exception $e) {
-throw new Twig_Error_Runtime(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, null, $e);
+throw new Twig_Error_Runtime(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, $this->getTemplateName(), $e);
 }
 }
 abstract protected function doDisplay(array $context, array $blocks = array());
@@ -6105,9 +6198,9 @@ throw new Twig_Error_Runtime(sprintf('Variable "%s" does not exist', $item), -1,
 }
 return $context[$item];
 }
-protected function getAttribute($object, $item, array $arguments = array(), $type = Twig_TemplateInterface::ANY_CALL, $isDefinedTest = false, $ignoreStrictCheck = false)
+protected function getAttribute($object, $item, array $arguments = array(), $type = Twig_Template::ANY_CALL, $isDefinedTest = false, $ignoreStrictCheck = false)
 {
-if (Twig_TemplateInterface::METHOD_CALL !== $type) {
+if (Twig_Template::METHOD_CALL !== $type) {
 $arrayItem = is_bool($item) || is_float($item) ? (int) $item : $item;
 if ((is_array($object) && array_key_exists($arrayItem, $object))
 || ($object instanceof ArrayAccess && isset($object[$arrayItem]))
@@ -6117,7 +6210,7 @@ return true;
 }
 return $object[$arrayItem];
 }
-if (Twig_TemplateInterface::ARRAY_CALL === $type || !is_object($object)) {
+if (Twig_Template::ARRAY_CALL === $type || !is_object($object)) {
 if ($isDefinedTest) {
 return false;
 }
@@ -6128,7 +6221,7 @@ if (is_object($object)) {
 throw new Twig_Error_Runtime(sprintf('Key "%s" in object (with ArrayAccess) of type "%s" does not exist', $arrayItem, get_class($object)), -1, $this->getTemplateName());
 } elseif (is_array($object)) {
 throw new Twig_Error_Runtime(sprintf('Key "%s" for array with keys "%s" does not exist', $arrayItem, implode(', ', array_keys($object))), -1, $this->getTemplateName());
-} elseif (Twig_TemplateInterface::ARRAY_CALL === $type) {
+} elseif (Twig_Template::ARRAY_CALL === $type) {
 throw new Twig_Error_Runtime(sprintf('Impossible to access a key ("%s") on a %s variable ("%s")', $item, gettype($object), $object), -1, $this->getTemplateName());
 } else {
 throw new Twig_Error_Runtime(sprintf('Impossible to access an attribute ("%s") on a %s variable ("%s")', $item, gettype($object), $object), -1, $this->getTemplateName());
@@ -6145,7 +6238,7 @@ return null;
 throw new Twig_Error_Runtime(sprintf('Impossible to invoke a method ("%s") on a %s variable ("%s")', $item, gettype($object), $object), -1, $this->getTemplateName());
 }
 $class = get_class($object);
-if (Twig_TemplateInterface::METHOD_CALL !== $type) {
+if (Twig_Template::METHOD_CALL !== $type) {
 if (isset($object->$item) || array_key_exists((string) $item, $object)) {
 if ($isDefinedTest) {
 return true;
@@ -6311,7 +6404,9 @@ unset($vars['extra'][$var]);
 }
 }
 foreach ($vars as $var => $val) {
+if (false !== strpos($output,'%'.$var.'%')) {
 $output = str_replace('%'.$var.'%', $this->convertToString($val), $output);
+}
 }
 return $output;
 }
@@ -6346,9 +6441,9 @@ return (string) $data;
 }
 $data = $this->normalize($data);
 if (version_compare(PHP_VERSION,'5.4.0','>=')) {
-return $this->toJson($data);
+return $this->toJson($data, true);
 }
-return str_replace('\\/','/', json_encode($data));
+return str_replace('\\/','/', @json_encode($data));
 }
 }
 }
@@ -6374,7 +6469,7 @@ use Monolog\Formatter\LineFormatter;
 abstract class AbstractHandler implements HandlerInterface
 {
 protected $level = Logger::DEBUG;
-protected $bubble = false;
+protected $bubble = true;
 protected $formatter;
 protected $processors = array();
 public function __construct($level = Logger::DEBUG, $bubble = true)
@@ -6401,6 +6496,7 @@ if (!is_callable($callback)) {
 throw new \InvalidArgumentException('Processors must be valid callables (callback or object with an __invoke method), '.var_export($callback, true).' given');
 }
 array_unshift($this->processors, $callback);
+return $this;
 }
 public function popProcessor()
 {
@@ -6412,6 +6508,7 @@ return array_shift($this->processors);
 public function setFormatter(FormatterInterface $formatter)
 {
 $this->formatter = $formatter;
+return $this;
 }
 public function getFormatter()
 {
@@ -6423,6 +6520,7 @@ return $this->formatter;
 public function setLevel($level)
 {
 $this->level = $level;
+return $this;
 }
 public function getLevel()
 {
@@ -6431,6 +6529,7 @@ return $this->level;
 public function setBubble($bubble)
 {
 $this->bubble = $bubble;
+return $this;
 }
 public function getBubble()
 {
@@ -6455,7 +6554,7 @@ abstract class AbstractProcessingHandler extends AbstractHandler
 {
 public function handle(array $record)
 {
-if ($record['level'] < $this->level) {
+if (!$this->isHandling($record)) {
 return false;
 }
 $record = $this->processRecord($record);
@@ -6482,6 +6581,7 @@ class StreamHandler extends AbstractProcessingHandler
 {
 protected $stream;
 protected $url;
+private $errorMessage;
 public function __construct($stream, $level = Logger::DEBUG, $bubble = true)
 {
 parent::__construct($level, $bubble);
@@ -6504,18 +6604,19 @@ if (null === $this->stream) {
 if (!$this->url) {
 throw new \LogicException('Missing stream url, the stream can not be opened. This may be caused by a premature call to close().');
 }
-$errorMessage = null;
-set_error_handler(function ($code, $msg) use (&$errorMessage) {
-$errorMessage = preg_replace('{^fopen\(.*?\): }','', $msg);
-});
+$this->errorMessage = null;
+set_error_handler(array($this,'customErrorHandler'));
 $this->stream = fopen($this->url,'a');
 restore_error_handler();
 if (!is_resource($this->stream)) {
 $this->stream = null;
-throw new \UnexpectedValueException(sprintf('The stream or file "%s" could not be opened: '.$errorMessage, $this->url));
+throw new \UnexpectedValueException(sprintf('The stream or file "%s" could not be opened: '.$this->errorMessage, $this->url));
 }
 }
 fwrite($this->stream, (string) $record['formatted']);
+}
+private function customErrorHandler($code, $msg) {
+$this->errorMessage = preg_replace('{^fopen\(.*?\): }','', $msg);
 }
 }
 }
