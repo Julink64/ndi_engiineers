@@ -36,7 +36,7 @@ class RegistrationController extends ContainerAware
         $process = $formHandler->process($confirmationEnabled);
         if ($process) {
             $user = $form->getData();
-
+            $user->addRole('ROLE_LAMBDA') ;
             $authUser = false;
             if ($confirmationEnabled) {
                 $this->container->get('session')->set('fos_user_send_confirmation_email/email', $user->getEmail());
