@@ -1,0 +1,1091 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en"><head>
+<title>Getting Started with the Finding API: Finding Items by Keywords</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/navstyle.css">
+<link rel="StyleSheet" type="text/css" href="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/API.css">
+<link rel="StyleSheet" type="text/css" href="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/ss-styles.css">
+<link rel="StyleSheet" type="text/css" href="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/ebay.css">
+<link rel="StyleSheet" type="text/css" href="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/types.css">
+<link rel="StyleSheet" type="text/css" href="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/ss-print.css" media="print">
+<script src="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/jquery.js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/navstyle.js"></script>
+<script type="text/javascript" src="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/tablist.js"></script>
+</head>
+<body>
+<a class="navinstr" value="notoc"> </a>
+<a class="navhighlight" value="Tutorials"> </a>
+<nosearch>
+<!-- SiteCatalyst code version: H.21.
+Copyright 1996-2010 Adobe, Inc. All Rights Reserved
+More info available at http://www.omniture.com -->
+<script language="JavaScript" type="text/javascript" src="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/Omniture.js"></script>
+<script language="JavaScript" type="text/javascript"><!--
+    s.pageName = ""
+    s.server = "developer.ebay.com"
+    s.channel = "Documentation/Finding"
+    s.pageType = "HTML"
+    s.events = ""
+    s.prop1 = ""
+    s.prop2 = ""
+    s.prop3 = ""
+    s.prop4 = ""
+    s.prop5 = ""
+    s.eVar1 = ""
+    s.eVar2 = ""
+    s.eVar3 = ""
+    s.eVar4 = ""
+    s.eVar5 = ""
+    /************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+    var s_code = s.t(); if (s_code) document.write(s_code)//--></script>
+<script language="JavaScript" type="text/javascript"><!--
+    if (navigator.appVersion.indexOf('MSIE') >= 0) document.write(unescape('%3C') + '\!-' + '-')
+//--></script><noscript><a href="http://www.omniture.com" title="Web Analytics"><img
+src="http://ebay.112.2o7.net/b/ss/ebaydeveloper/1/H.21--NS/0"
+height="1" width="1" border="0" alt="" /></a></noscript><!--/DO NOT REMOVE/-->
+<!-- End SiteCatalyst code version: H.21. -->
+</nosearch>
+
+<div id="headbar">
+	<div id="logo">
+		<a target="_blank" href="https://go.developer.ebay.com/">
+		<img src="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/eBayDevLogo_sm.gif" border="0">
+		</a>
+	</div>
+  <div id="dochead">
+<span id="realm">Finding API</span></div>
+	<div id="siteresources">
+		<ul>
+		<li><a href="https://go.developer.ebay.com/">Home</a></li>
+		<li><a href="https://go.developer.ebay.com/developers/ebay/documentation-tools/">All Docs</a></li>
+		<li><a href="https://go.developer.ebay.com/developers/ebay/products">Products</a></li>
+		<li><a href="https://go.developer.ebay.com/developers/ebay/forums-support/support">Support</a></li>
+		<li><a href="https://developer.ebay.com/DevZone/support/knowledgebase/default.aspx">Knowledge Base</a></li>
+		<li><a href="https://go.developer.ebay.com/developers/ebay/forums">Forums</a></li>
+		<li><a href="https://go.developer.ebay.com/developers/ebay/resources">Resources</a></li>
+		</ul>
+	</div>
+	<div id="docsetAll">
+		<ul>
+		<li><a href="http://developer.ebay.com/DevZone/guides/ebayfeatures/index.html">Features Guide</a></li>
+		<li><a href="http://developer.ebay.com/DevZone/finding/Concepts/FindingAPIGuide.html">Users Guide</a></li>
+		<li><a href="http://developer.ebay.com/DevZone/finding/Concepts/MakingACall.html">Making a Call</a></li>
+		<li><a href="http://developer.ebay.com/DevZone/finding/CallRef/index.html">API Reference</a></li>
+		<li class="selected">Tutorials</li>
+		<li><a href="http://developer.ebay.com/DevZone/finding/ReleaseNotes.html">Release Notes</a></li>
+	</ul>
+	</div>
+	<div id="searchy">
+		<form id="gsb" method="get" action="https://www.google.com/#q='listing'+site:developer.ebay.com/DevZone/guides/ebayfeatures/">
+			<input value="Search text" style="color: rgb(204, 204, 204);" id="gsbt" type="text">
+		</form>
+		<img style="cursor: pointer;" id="magglass" src="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/magglass.png">
+	</div>
+</div>
+
+<!-- Start bottom half divs -->
+<div id="bottomhalf">
+<a name="top"></a>
+<div style="left: 0px; width: 1291px; height: 539px;" id="doc">
+
+
+<!-- Start doc content -->
+<h1>Getting Started with the Finding API: Finding Items by Keywords</h1>
+
+<p>This tutorial shows how easy it is to use the Finding API. The 
+tutorial shows you how to build a simple PHP application that submits a <b class="con">findItemsByKeywords</b>
+ call to search for eBay listings based on a keyword query. The code 
+constructs a URL-format HTTP GET call that returns an XML response. The 
+PHP program parses the XML response and constructs a simple HTML page 
+that shows the results of the search.</p>
+
+<p>After completing the tutorial, you'll have an application that 
+displays an HTML page that looks similar to the following when it runs:</p>
+
+<p><img src="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/GettingStarted_PHP_NV_XML.jpg" alt="Getting Started with the Finding API" border="0" height="471" width="689"></p>
+
+<p>For notes about the tutorial, additional resources, and suggestions for next steps, please see <a href="#next">Notes and Next Steps</a>. </p>
+<br><br>
+
+
+<a name="toc"></a>
+<h1>What's in this Tutorial</h1>
+
+<p>This tutorial contains the following sections:</p>
+
+<!-- Update steps in link list for tutorial -->
+<ul>
+<li><a href="#code"><strong>Complete Source Code</strong></a></li>
+<li><a href="#prereq"><strong>Before You Begin</strong></a></li>
+<li><a href="#step1"><strong>Step 1: Set up the API call</strong></a></li>
+<li><a href="#step2"><strong>Step 2: Add code to parse and display the call response</strong></a></li>
+<li><a href="#step3"><strong>Step 3: Insert an indexed array of item filters</strong></a></li>
+<li><a href="#step4"><strong>Step 4: Run the code</strong></a></li>
+<li><a href="#next"><strong>Notes and Next Steps</strong></a></li>
+<li><a href="#comments"><strong>User-contributed Notes</strong></a></li>
+</ul>
+
+<p style="font-size: 80%;" class="btt"><a href="#top">Back to top</a></p>
+
+<a name="code"></a>
+<h1>Complete Source Code</h1>
+
+<p>The completed code is provided as a downloadable ZIP file, <a href="http://developer.ebay.com/DevZone/finding/HowTo/GettingStarted_PHP_NV_XML/GettingStarted_PHP_NV_XML.zip">GettingStarted_PHP_NV_XML.zip</a>. To run the program, you  must replace instances of "MyAppID" in the tutorial code with your production AppID. </p>
+
+<p style="font-size: 80%;" class="btt"><a href="#top">Back to top</a></p>
+
+<a name="prereq"></a>
+<h1>Before You Begin</h1>
+
+<p>There are a few prerequisites for completing this tutorial:</p>
+
+<ul>
+<li><a href="http://developer.ebay.com/join" target="_blank">Join the eBay Developers Program</a> and get your Access Keys.
+<p>Joining is free and you get 5,000 API calls a day just for joining! When you generate your application keys from your <a href="https://developer.ebay.com/DevZone/account/Default.aspx" target="_blank">My Account page</a>,
+ note your Production AppID so you can substitute it in this tutorial 
+where it says "MyAppID." The program in this tutorial makes calls to the
+ eBay production site and makes use of live production data.</p>
+</li>
+<li>Install <a href="http://httpd.apache.org/download.cgi">Apache HTTP Server</a>.
+    <p>Apache HTTP Server is a popular web server, capable of running 
+PHP applications. Apache is easy to install and configure. The steps in 
+this tutorial are written with the assumption you are using Apache. PHP 
+is, however, compatible with most popular web servers, so Apache is not 
+strictly required. The tutorial code should run on any web server 
+configured to support PHP.</p>
+  </li>
+<li>Install <a href="http://php.net/">PHP 5</a>.
+    <p>The code for this tutorial is written in PHP. PHP 5 includes the <a href="http://www.php.net/manual/en/ref.simplexml.php" target="_blank">SimpleXML extension</a>, which is required for this tutorial.</p>
+  </li>
+</ul>
+
+<p style="font-size: 80%;" class="btt"><a href="#top">Back to top</a></p>
+
+<a name="step1"></a>
+<h1>Step 1: Set up the API call</h1>
+
+<p>In this step, you set up the basic PHP code to construct the API request and the HTML code for displaying the results. </p>
+
+<p>To create the initial code for your Finding API call:</p>
+
+<ol>
+<li><b>Create a new PHP file, <code>MySample.php</code>, with the following code: </b>
+  <br><br>
+<pre>&lt;?php
+
+?&gt;
+&lt;!-- Build the HTML page with values from the call response --&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;eBay Search Results for &lt;?php echo $query; ?&gt;&lt;/title&gt;
+&lt;style type="text/css"&gt;body { font-family: arial,sans-serif;} &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;h1&gt;eBay Search Results for &lt;?php echo $query; ?&gt;&lt;/h1&gt;
+
+&lt;table&gt;
+&lt;tr&gt;
+  &lt;td&gt;
+    &lt;?php echo $results;?&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<br>
+
+<p>Save the file as <code>MySample.php</code> in the DocumentRoot directory of your Apache installation (for example, <code>C:\Program Files\Apache Software Foundation\Apache2.2\htdocs</code>). The file includes the PHP container (<code>&lt;?php ... ?&gt;</code>)
+ where you'll add the code to make an API request and parse the 
+response. It also includes the HTML code to display the data parsed from
+ the XML response. </p>
+</li>
+
+<li><b>Plan the values for the <b class="con">findItemsByKeywords</b> input parameters.</b>
+<br><br>
+
+<table>
+<tbody><tr>
+<th width="25%">Standard Parameter&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th width="25%">Sample value</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>OPERATION-NAME</td>
+<td>findItemsByKeywords</td>
+<td>The name of the call you are using. This is hard-coded to <code>findItemsByKeywords</code> in the following step.</td>
+</tr>
+<tr>
+<td>SERVICE-VERSION</td>
+<td>1.0.0</td>
+<td>The API version your application supports.</td>
+</tr>
+<tr>
+<td>SECURITY-APPNAME</td>
+<td>MyAppID</td>
+<td>The AppID you obtain by <a href="http://developer.ebay.com/join" target="_blank">joining the
+eBay Developers Program</a>. </td>
+</tr>
+<tr>
+<td>GLOBAL-ID</td>
+<td>EBAY-US</td>
+<td>The eBay site you want to search. For example, the eBay US site (<code>EBAY-US</code>) or the eBay Germany site (<code>EBAY-DE</code>).</td>
+</tr>
+</tbody></table>
+<br>
+
+<table>
+<tbody><tr>
+<th width="25%">Call-Specific Parameter</th>
+<th width="25%">Sample value</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>keywords</td>
+<td>harry potter</td>
+<td>The string of words you want to match with eBay item information, such as titles. The <code>$safequery</code>
+ variable (added in the next step) will URL-encode your query keywords 
+to replace spaces and special characters so the query will work in a URL
+ request.</td>
+</tr>
+<tr>
+<td>paginationInput.entriesPerPage</td>
+<td>3</td>
+  <td>The maximum number of items to return in the response. This is hard-coded as 3 in the program code.</td>
+</tr>
+</tbody></table>
+<br>
+</li>
+
+<li><b>Add the code to construct the API request.</b>
+<p>This code contains the following:</p>
+
+<ul>
+<li>The error reporting level for the program.</li>
+<li>API request variables for input parameter values from the preceding step, including the query keywords and your AppID</li>
+<li>API call variable, <code>$apicall</code>, constructed with values from the declared variables</li>
+</ul>
+
+<table>
+<tbody><tr>
+<td class="notebox"><b>Note: </b>You must replace the "MyAppID" value for the <code>$appid</code> variable with your Production AppID. Retrieve your AppID from your <a href="https://developer.ebay.com/DevZone/account/Default.aspx" target="_blank">My Account page</a>.</td>
+</tr>
+</tbody></table>
+
+<p>Enter the following code inside the PHP tags (<code>&lt;?php ... ?&gt;</code> at the top of the file. </p>
+
+<pre>error_reporting(E_ALL);  // Turn on all errors, warnings and notices for easier debugging
+
+// API request variables
+$endpoint = 'http://svcs.ebay.com/services/search/FindingService/v1';  // URL to call
+$version = '1.0.0';  // API version supported by your application
+$appid = 'MyAppID';  // Replace with your own AppID
+$globalid = 'EBAY-US';  // Global ID of the eBay site you want to search (e.g., EBAY-DE)
+$query = 'harry potter';  // You may want to supply your own query
+$safequery = urlencode($query);  // Make the query URL-friendly
+
+// Construct the findItemsByKeywords HTTP GET call
+$apicall = "$endpoint?";
+$apicall .= "OPERATION-NAME=findItemsByKeywords";
+$apicall .= "&amp;SERVICE-VERSION=$version";
+$apicall .= "&amp;SECURITY-APPNAME=$appid";
+$apicall .= "&amp;GLOBAL-ID=$globalid";
+$apicall .= "&amp;keywords=$safequery";
+$apicall .= "&amp;paginationInput.entriesPerPage=3";
+</pre>
+</li>
+
+<li><b>Replace <code>MyAppID</code> in the API request variables code with your Production AppID.</b>
+
+<p><b>Important: </b>This tutorial uses the production endpoint for the 
+Finding API, so you must use your production AppID for the application 
+to work. The request will fail if a Sandbox AppID is used.</p>
+
+<pre>$appid = '<b>MyAppID</b>';  // Replace with your own AppID
+</pre>
+</li>
+</ol>
+
+<p>The tutorial code is not yet ready to run. Proceed to the next step 
+to add the code that submits the API request and parses the response.</p>
+
+<p style="font-size: 80%;" class="btt"><a href="#top">Back to top</a></p>
+
+<a name="step2"></a>
+<h1>Step 2: Add code to parse and display the call response</h1>
+
+<p>In this step you will add code to store and then display the items returned.</p>
+
+<p>Here is the URL used for your Finding API call, as described in Step 1:</p>
+
+<p><a href="http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByKeywords&amp;SERVICE-VERSION=1.0.0&amp;SECURITY-APPNAME=MyAppID&amp;GLOBAL-ID=EBAY-US&amp;keywords=harry+potter&amp;paginationInput.entriesPerPage=3">http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByKeywords&amp;SERVICE-VERSION=1.0.0&amp;SECURITY-APPNAME=MyAppID&amp;GLOBAL-ID=EBAY-US&amp;keywords=harry+potter&amp;paginationInput.entriesPerPage=3</a></p>
+
+<p>The response data is returned in XML format by default.</p>
+
+<p>In this step you will add code to parse the call response and display the items returned.</p>
+
+<ol>
+<li><b>Add PHP code to parse the API call response and write the HTML to display the results.</b>
+
+<p>The following PHP code creates rows to add to the HTML table in the HTML body of the <code>MySample.php</code>
+ file. The code loops through the array of items in the search results, 
+adding a new row to the table for each item. Each row consists of the 
+item's gallery image and title. The title links to the item's View Item 
+page.</p>
+
+<p>Add the following code just after the last line of the <code>$apicall</code> variable (<code>$apicall&nbsp;.=&nbsp;"&amp;paginationInput.entriesPerPage=3";</code>).</p>
+
+<pre>// Load the call and capture the document returned by eBay API
+$resp = simplexml_load_file($apicall);
+
+// Check to see if the request was successful, else print an error
+if ($resp-&gt;ack == "Success") {
+  $results = '';
+  // If the response was loaded, parse it and build links
+  foreach($resp-&gt;searchResult-&gt;item as $item) {
+    $pic   = $item-&gt;galleryURL;
+    $link  = $item-&gt;viewItemURL;
+    $title = $item-&gt;title;
+
+    // For each SearchResultItem node, build a link and append it to $results
+    $results .= "&lt;tr&gt;&lt;td&gt;&lt;img src=\"$pic\"&gt;&lt;/td&gt;&lt;td&gt;&lt;a href=\"$link\"&gt;$title&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;";
+  }
+}
+// If the response does not indicate 'Success,' print an error
+else {
+  $results  = "&lt;h3&gt;Oops! The request was not successful. Make sure you are using a valid ";
+  $results .= "AppID for the Production environment.&lt;/h3&gt;";
+}
+</pre>
+</li>
+
+<li><b>Save the <code>MySample.php</code> file.</b> </li>
+</ol>
+
+<p>This file is now runnable, but we're not done yet. Skip ahead to <a href="#step4">Step 4</a> to see what it looks like, or proceed to the next step to add item filters to the request.</p>
+
+<p style="font-size: 80%;" class="btt"><a href="#top">Back to top</a></p>
+
+
+<a name="step3"></a>
+<h1>Step 3: Insert an indexed array of item filters</h1>
+
+<p>This step adds item filters to your request. This is done by first 
+creating a PHP array of the item filters. A function then uses this 
+array to create an indexed URL format snippet for use in the URL 
+reqeust. Whenever you use repeating fields in a URL-format request, you 
+must index the fields for them to be properly processed.  </p>
+
+<p>You can reuse this function or a function like it to process item filters submitted through a web form.</p>
+
+
+<ol>
+<li><b>Create a PHP array of item filters.</b>
+<p>Add the following array after the variable declarations (i.e., after the line starting with <code>$safequery</code>). This array contains three item filters: MaxPrice, FreeShippingOnly, and ListingType.</p>
+
+<pre>// Create a PHP array of the item filters you want to use in your request
+$filterarray =
+  array(
+    array(
+    'name' =&gt; 'MaxPrice',
+    'value' =&gt; '25',
+    'paramName' =&gt; 'Currency',
+    'paramValue' =&gt; 'USD'),
+    array(
+    'name' =&gt; 'FreeShippingOnly',
+    'value' =&gt; 'true',
+    'paramName' =&gt; '',
+    'paramValue' =&gt; ''),
+    array(
+    'name' =&gt; 'ListingType',
+    'value' =&gt; array('AuctionWithBIN','FixedPrice','StoreInventory'),
+    'paramName' =&gt; '',
+    'paramValue' =&gt; ''),
+  );
+</pre>
+</li>
+
+<li><b>Add a function to build an indexed item filter array for use with a URL request.</b>
+<p>This function parses the item filter array, formats the filters as 
+indexed URL parameters, and assigns their collective value to a 
+variable, <code>$urlfilter</code>.</p>
+
+<p>Add the following code directly after the array added in the preceding step (<code>$filterarray&nbsp;=&nbsp;array(&nbsp;...&nbsp;);</code>).</p>
+
+<pre>// Generates an indexed URL snippet from the array of item filters
+function buildURLArray ($filterarray) {
+  global $urlfilter;
+  global $i;
+  // Iterate through each filter in the array
+  foreach($filterarray as $itemfilter) {
+    // Iterate through each key in the filter
+    foreach ($itemfilter as $key =&gt;$value) {
+      if(is_array($value)) {
+        foreach($value as $j =&gt; $content) { // Index the key for each value
+          $urlfilter .= "&amp;itemFilter($i).$key($j)=$content";
+        }
+      }
+      else {
+        if($value != "") {
+          $urlfilter .= "&amp;itemFilter($i).$key=$value";
+        }
+      }
+    }
+    $i++;
+  }
+  return "$urlfilter";
+} // End of buildURLArray function
+
+// Build the indexed item filter URL snippet
+buildURLArray($filterarray);
+</pre>
+</li>
+
+<li><b>Add a variable declaration for the item filter index to initialize its value as 0.</b>
+<p>Add the following line to the variable section at the top of the file directly after the <code>$safequery</code> entry.</p>
+
+<pre>$i = '0';  // Initialize the item filter index to 0
+</pre>
+</li>
+
+<li><b>Add the variable for the item filters to the end of the code used to construct the API call. </b>
+
+<p>Add the following line to the end of the <code>$apicall</code> variable, directly after the line that adds pagination to the call (<code>$apicall&nbsp;.=&nbsp;"&amp;paginationInput.entriesPerPage=3";</code>).</p>
+
+<pre>$apicall .= "$urlfilter";
+</pre>
+</li>
+
+<li><b>Save the <code>MySample.php</code> file.</b> </li>
+</ol>
+
+<p>The <code>MySample.php</code> file is complete! Proceed to the next step to see the results.</p>
+
+<p style="font-size: 80%;" class="btt"><a href="#top">Back to top</a></p>
+
+<a name="step4"></a>
+<h1>Step 4: Run the code</h1>
+
+<p><b></b> Open the file in a browser (<a href="http://localhost/MySample.php" target="_blank">http://localhost/MySample.php</a>).</p>
+
+<p>The result should look similar to the following:</p>
+
+<p><img src="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/GettingStarted_PHP_NV_XML.jpg" alt="Getting Started with the Finding API" border="0" height="471" width="689"></p>
+
+<p>Congratulations! You have used the Finding API to search for items on eBay and to display the search results to a user.</p>
+
+<p>For information about the business benefits of using the eBay 
+Developers Program and for other important information, please see the <a href="http://developer.ebay.com/businessbenefits/" target="_blank">Business Benefits page</a>.</p>
+
+<p style="font-size: 80%;" class="btt"><a href="#top">Back to top</a></p>
+
+<a name="next"></a>
+<h1>Notes and Next Steps</h1>
+
+<p>This section contains notes about the tutorial and suggestions.</p>
+
+<h2>eBay Partner Network (eBay Affiliate Program)</h2>
+
+<p>You can <strong>earn money with the eBay Partner Network (eBay Affiliate Program)</strong>! Send users to eBay, and earn money for new active users (ACRUs) and successful transactions. For more information, visit the <a href="https://www.ebaypartnernetwork.com/" target="_blank">eBay Partner Network</a>.
+ This tutorial contains affiliate-related code. The code is 
+commented-out because affiliate functionality is not available in the 
+Sandbox environment. </p>
+
+<p>For information about the URL parameters for affiliate tracking, see the <a href="http://developer.ebay.com/DevZone/finding/Concepts/FindingAPIGuide.html#useaffiliate">Affiliate Tracking</a> section in the Finding API Users Guide.</p>
+
+
+<h2>About the Application</h2>
+
+<p>The sample provided with this tutorial was built and tested on a 
+Windows platform using PHP 5.3 for Win32 and Apache 2.2.4 for Windows.</p>
+
+
+<h2>About the Call</h2>
+
+<p>This tutorial is based on the <b class="con">findItemsByKeywords</b> call. See <a href="http://developer.ebay.com/DevZone/finding/CallRef/findItemsByKeywords.html"><b class="con">findItemsByKeywords</b></a> in the <i>API Reference</i> for descriptions of all the input and output parameters, call samples, and other information. </p>
+
+<p>If you want your application to display the assembled URL request 
+that is being sent to eBay, add the following PHP/HTML code just before 
+the closing body tag (i.e., &lt;/body&gt;):</p>
+
+<pre class="indent">&lt;p&gt;&lt;b&gt;API request used (click URL to view XML response):&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="&lt;?php echo $apicall;?&gt;"&gt;&lt;?php echo $apicall;?&gt;&lt;/a&gt;&lt;/p&gt;
+</pre>
+
+<p>You can adapt this tutorial code to other Finding API calls easily by changing the value of <code>OPERATION-NAME</code> to the call you want to use. Note that <b class="con">findItemsByCategory</b> and <b class="con">findItemsByProduct</b> do not support <b class="con">keywords</b> as input.</p>
+
+<h2>What's Next</h2>
+
+<p>Here are some suggestions for ways you could modify or extend the 
+tutorial code to learn more about the API and create a more interesting 
+application:</p>
+
+<ul>
+<li>Change the keywords in your query to see how the output is effected</li>
+<li>Modify the application to display additional fields</li>
+<li>Try different input parameters, such as <b class="con">sortOrder</b>, to control the results</li>
+<li>Add more, or different, item filters</li>
+<li>Programmatically populate the item filter array from UI interaction</li>
+<li>Adapt the item filter array and the array indexing function for use with aspect filters</li>
+</ul>
+
+<p style="font-size: 80%;" class="btt"><a href="#top">Back to top</a></p>
+
+<a name="AdditionalResources"></a>
+<h2>Additional Resources</h2>
+
+  <p>More information about the Finding API is available at these locations:</p>
+
+<ul>
+  <li><a href="http://developer.ebay.com/DevZone/finding/CallRef/index.html" target="_blank">API Reference</a></li>
+  <li><a href="http://developer.ebay.com/DevZone/finding/Concepts/FindingAPIGuide.html" target="_blank">Users Guide</a></li>
+  <li><a href="http://developer.ebay.com/DevZone/finding/Concepts/MakingACall.html" target="_blank">Making a Call</a></li>
+</ul>
+
+<p style="font-size: 80%;" class="btt"><a href="#top">Back to top</a></p>
+
+
+<a name="userNotes"></a>
+<h2>User-Contributed Notes</h2>
+<table id="js" border="0" cellpadding="0" cellspacing="0">
+<tbody><tr>
+ <td rowspan="4" width="95%"><script type="text/javascript" src="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/module.htm"></script><script type="text/javascript" src="Getting%20Started%20with%20the%20Finding%20API%20%20Finding%20Items%20by%20Keywords_files/module_002.htm"></script>
+<div>
+	
+<style>
+div.solset_comments *
+{
+    font-family: Arial;
+    font-size: 11px;
+}
+
+div.solset_comments .solset_red
+{
+	color: #f30;
+}
+
+div.solset_comments ol
+{
+	margin: 10px 0 10px 10px;
+	list-style-type: none;
+}
+
+div.solset_comments ol li
+{
+	font-size: 12px;
+	margin-bottom: 10px;
+}
+
+div.solset_comments ol li .solset_wrote-on
+{
+	font-weight: normal;
+	font-style: italic;
+}
+
+div.solset_addcomment
+{
+	
+}
+
+div.solset_addcomment fieldset
+{
+	border: 0;
+}
+
+div.solset_addcomment legend
+{
+	font-size: 1.2em;
+}
+
+div.solset_addcomment div.iefix
+{
+	_height: 1%; /*IE FIX*/
+	margin-bottom: .2em;
+	
+	float: 			left;
+	display: 		inline;
+	font-size: 1.2em;
+}
+
+div.solset_addcomment textarea  {
+	border-top:			1px solid #666;
+	border-left:		1px solid #666;
+	border-bottom:		1px solid #ccc;
+	border-right:		1px solid #ccc;
+	font-size:			1.1em;
+	padding:			0.1em;
+	width: 550px;
+	height: 80px;
+}
+
+div.solset_addcomment input.submit
+{
+	clear: 				both;
+	margin-top:			1em;
+	font-size:			1.2em;
+	float:				left;
+	display:			inline;
+}
+
+div.solset_comments h3.detailHdr2 
+{
+	font-weight: bold;
+	background: #e2e7e9;
+	color: #446e7a;
+	margin: 0;
+	padding: 3px;
+	font-size: 12px;
+	line-height: 12px;
+}
+
+pre.comment 
+{
+        white-space: pre-wrap;       /* css-3 */
+        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+        white-space: -pre-wrap;      /* Opera 4-6 */
+        white-space: -o-pre-wrap;    /* Opera 7 */
+        word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+</style>
+	<div class="solset_comments">
+		
+		<h3 class="detailHdr2">
+			Comments
+			(<span id="NoteCount">24</span>):</h3>
+		<a name="comments"></a>
+		<ol id="comments">
+			
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=bitsmack">
+                    bitsmack
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    7/28/2009 9:45:18 AM:</strong><br>
+                    <pre class="comment">I've got this example working perfectly and now I am trying to return more fields like current bids and price. Under this code I added the extra fields: 
+
+$pic = $item-&amp;gt;galleryURL; 
+$link = $item-&amp;gt;viewItemURL;
+$title = $item-&amp;gt;title; 
+$currentbid = $item-&amp;gt;sellingstatus-&amp;gt;currentprice + $item-&amp;gt;shippinginfo-&amp;gt;shippingservicecost; 
+$numbids = $item-&amp;gt;sellingstatus-&amp;gt;bidcount; 
+$timeleft = $item-&amp;gt;sellingstatus-&amp;gt;timeleft; 
+$buyitnow = $item-&amp;gt;listinginfo-&amp;gt;buyitnowprice; 
+
+Then I added the new fields to my result string: 
+$results .= "&lt;img src="/%22$pic/%22"&gt;&lt;a href="/%22$link/%22"&gt;$title&lt;/a&gt;&lt;br&gt;($numbids bids) $currentbid Buy It Now: 
+$buyitnow Time Left: $timeleft "; 
+
+However the new fields I added don't show up, only pic and title. What am I missing? Thanks!</pre>
+                    
+                </li>
+               
+            
+                <li style="background-color:#FFCCCC">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=curtis.developerdocs">
+                    curtis.developerdocs
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    8/4/2009 12:37:51 PM:</strong><br>
+                    <pre class="comment">Hi bitsmack,
+
+I think this exact question was asked in the Getting Started/Introductions Forum. In that case, the developer determined correctly that field 
+names are case-sensitive. The schema casing rule for elements is first letter lowercase, with the first letter of each internal 
+word capitalized (e.g., shippingServiceCost). 
+
+Glad you were able to get the tutorial working.
+
+Regards,
+
+Curtis
+API Technical Publications
+</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=bhargav2785">
+                    bhargav2785
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    8/11/2009 3:18:22 PM:</strong><br>
+                    <pre class="comment">@jamdev $item-&amp;gt;sellingStatus-&amp;gt;currentPrice</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=jamdev">
+                    jamdev
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    8/6/2009 11:45:47 AM:</strong><br>
+                    <pre class="comment">how to add price to the display </pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=dyarovoy">
+                    dyarovoy
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    10/6/2009 5:27:25 PM:</strong><br>
+                    <pre class="comment">The number of results is limited to 100. Is there any way to lift this limit?</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=megachecklist17">
+                    megachecklist17
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    4/23/2010 3:27:05 PM:</strong><br>
+                    <pre class="comment">Anyone willing to share or write a php4.3 code renderer to display the data parsed from the XML response? My webhost is reluctant to upgrade to php5 unfortunately. I would be greatly appreciative ($). Mega@Megachecklist dot com</pre>
+                    
+                </li>
+               
+            
+                <li style="background-color:#FFCCCC">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=curtis.developerdocs">
+                    curtis.developerdocs
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    2/11/2010 5:54:10 PM:</strong><br>
+                    <pre class="comment">Hi arumba1117, 
+
+I realize the limitation of GetSellerList. The eBay APIs do not support currently the ability to retrieve information about completed items unless you are the seller of the item. You can always post on the Developer Product Feedback / Wishlist forum (http://dev-forums.ebay.com/forum.jspa?forumID=6) to request an API enhancement. 
+
+The GetSellerList call is in the Trading API, which supports SOAP or XML HTTP POST requests only. The Trading API does not support REST-style requests. 
+
+Regards, 
+
+Curtis, API Technical Publications</pre>
+                    
+                </li>
+               
+            
+                <li style="background-color:#FFCCCC">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=curtis.developerdocs">
+                    curtis.developerdocs
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    1/22/2010 2:32:18 PM:</strong><br>
+                    <pre class="comment">Hi arumba1117, 
+
+The Finding API does not support searching for completed items. However, sellers can use the GetSellerList call in the Trading API to retrieve their completed items. For more information, see the "Getting my active items and items that ended" article in the Knowledge Base (http://ebay.custhelp.com/cgi-bin/ebay.cfg/php/enduser/std_adp.php?p_faqid=1456). 
+
+Regards, 
+
+Curtis, API Technical Publications</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=avaldezg">
+                    avaldezg
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    11/26/2009 2:39:21 AM:</strong><br>
+                    <pre class="comment">Hi guys, Is it possible to return more fields like the shopID/name, userID and country of the seller? Your help is much appreciated, Alexis</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=arumba1117">
+                    arumba1117
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    1/22/2010 1:48:17 PM:</strong><br>
+                    <pre class="comment">how do i only display items that have a sellingStatus.sellingState=Ended ? thanks</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=arumba1117">
+                    arumba1117
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    1/23/2010 1:00:54 PM:</strong><br>
+                    <pre class="comment">Hi Curtis,
+
+The problem with using the GetSellerList is that I don't want to have to specify the seller of the item. I simply want to collect data for items that have ended given a query. is there another approach?
+cheers</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=arumba1117">
+                    arumba1117
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    1/23/2010 4:35:11 PM:</strong><br>
+                    <pre class="comment">is there a way to use the getSellerList call in a URL format? an example would be extremely helpful.
+thanks a lot</pre>
+                    
+                </li>
+               
+            
+                <li style="background-color:#FFCCCC">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=lisa.developerdocs">
+                    lisa.developerdocs
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    2/21/2013 9:41:07 AM:</strong><br>
+                    <pre class="comment">Greetings Fitness Expert,
+
+The filter names are available in the call reference for findItemsByKeywords:
+http://developer.ebay.com/Devzone/finding/CallRef/findItemsByKeywords.html
+
+Look for itemFilter.name for a link to a list of the applicable values.
+
+If you want to also filter by category, take a look at findItemsAdvanced, 
+which includes that as an option.
+
+Best regards,
+Lisa</pre>
+                    
+                </li>
+               
+            
+                <li style="background-color:#FFCCCC">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=curtis.developerdocs">
+                    curtis.developerdocs
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    6/1/2010 12:31:31 PM:</strong><br>
+                    <pre class="comment">@alamal01: Hi, I see a couple issues that may cause your app/request to fail. 
+
+First, the specified global ID (EBAY-BE) in your request does not correspond to a valid eBay site. See the global ID values list in the documentation (http://developer.ebay.com/DevZone/finding/CallRef/Enums/GlobalIdList.html) for a complete list of valid values. 
+
+Second, it looks like your AppID (I have removed your real AppID from your comment) was URL-encoded with a space (%20) at the end. When I removed the encoded space, the request worked fine. 
+
+Hope that helps.
+
+Regards, 
+
+Curtis, API Technical Publications</pre>
+                    
+                </li>
+               
+            
+                <li style="background-color:#FFCCCC">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=curtis.developerdocs">
+                    curtis.developerdocs
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    8/30/2010 11:27:57 AM:</strong><br>
+                    <pre class="comment">Hi guvenck, Yes, you are correct. To restrict your keyword query to a specific category or categories, you must use findItemsAdvanced. 
+Only the findItemsAdvanced call supports the use of keywords and categoryId in combination. 
+In your findItemsAdvanced request, you can repeat the categoryId field to include up to 3 category ID values. 
+Regards, 
+Curtis, API Tech Docs</pre>
+                    
+                </li>
+               
+            
+                <li style="background-color:#FFCCCC">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=curtis.developerdocs">
+                    curtis.developerdocs
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    8/30/2010 11:32:21 AM:</strong><br>
+                    <pre class="comment">Hi khalilo, That error message indicates that SimpleXML extension (http://www.php.net/manual/en/ref.simplexml.php) is not enabled in your PHP installation. 
+SimpleXML should be enabled by default for PHP 5. You can use the phpinfo() function to check your PHP configuration. 
+Regards, 
+Curtis, API Tech Docs</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=albertux">
+                    albertux
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    5/10/2010 4:52:34 PM:</strong><br>
+                    <pre class="comment">Using the demo ( developer.ebay.com/quickstartguide/sample/js/default.aspx ) try to get currentPrice but does't work:
+
+...
+    var item     = items[i];
+    var title    = item.title;
+    var pic      = item.galleryURL;
+    var price     = item.sellingStatus.currentPrice;
+    var viewitem = item.viewItemURL;
+...
+
+What Im doing wrong ?</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=albertux">
+                    albertux
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    5/10/2010 4:57:42 PM:</strong><br>
+                    <pre class="comment">Albertux to Albertux: // Ask myself but maybe other's need this:
+...
+    var item     = items[i];
+    var title    = item.title;
+    var pic      = item.galleryURL;
+    var price    = item.sellingStatus[0].currentPrice[0].__value__;  // google: javascript + json + object
+    var viewitem = item.viewItemURL;
+...</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=guvenck">
+                    guvenck
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    6/5/2010 12:27:26 PM:</strong><br>
+                    <pre class="comment">Hello, amazing documentation! Congratulations!
+
+I wonder how I can filter to select items from a specific category?
+
+There is primaryCategory, categoryID and categoryName in the xml response.
+
+Do I have to use findItemsAdvanced in this case?
+
+I guess itemFilter doesn't have a itemFilter.name to allow selecting items from a single category. It does have ExcludeCategory, but not the opposite.
+
+Can you advice?
+
+</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=alamal01">
+                    alamal01
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    5/27/2010 3:28:26 PM:</strong><br>
+                    <pre class="comment">i tried this API but i get an error :
+Warning: simplexml_load_file(http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByKeywords&amp;amp;SERVICE-VERSION=1.0.0&amp;amp;SECURITY-APPNAME=ABC...123%20&amp;amp;GLOBAL-ID=EBAY-BE&amp;amp;keywords=harry%2Bpotter&amp;amp;paginationInput.entriesPerPage=3) [function.simplexml-load-file]: failed to open stream: HTTP request failed! HTTP/1.1 500 Internal Server Error in C:\xampp\htdocs\sample.php on line 22
+
+Warning: simplexml_load_file() [function.simplexml-load-file]: I/O warning : failed to load external entity "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByKeywords&amp;amp;SERVICE-VERSION=1.0.0&amp;amp;SECURITY-APPNAME=ABC...123%20&amp;amp;GLOBAL-ID=EBAY-BE&amp;amp;keywords=harry%2Bpotter&amp;amp;paginationInput.entriesPerPage=3" in C:\xampp\htdocs\sample.php on line 22
+
+Notice: Trying to get property of non-object in C:\xampp\htdocs\sample.php on line 25
+
+i wish i get help, even i spent 4 hours on google , but no solution for this issue 
+</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=khalilo">
+                    khalilo
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    8/25/2010 11:42:29 PM:</strong><br>
+                    <pre class="comment">hi, I keep getting this error message : "Fatal error: Call to undefined function: simplexml_load_file()"</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=malik">
+                    malik
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    4/27/2011 5:53:04 AM:</strong><br>
+                    <pre class="comment">if anyone wants to add the current bid, you can simply add 
+$currentBid = sprintf("%01.2f", $item-&amp;gt;sellingStatus-&amp;gt;convertedCurrentPrice); 
+inside the foreach($resp-&amp;gt;searchResult-&amp;gt;item as $item) { (add the code here) } and then display it in the table it works </pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=voinguyen">
+                    voinguyen
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    6/20/2011 9:33:33 PM:</strong><br>
+                    <pre class="comment">The number of results is limited to 100.
+&amp;gt;&amp;gt; i got this problem. How can i handle that?</pre>
+                    
+                </li>
+               
+            
+                <li style="">
+                    <strong><a target="_top" href="http://developer.ebay.com/profile/?user=fitnessexpert">
+                    fitnessexpert
+                </a>
+                    <span class="wrote-on">wrote on</span>
+                    2/16/2013 3:34:30 AM:</strong><br>
+                    <pre class="comment">please How can I know many filter names ????</pre>
+                    
+                </li>
+               
+            
+			<p>
+				
+			</p>
+		</ol>
+		<form target="_top" id="Form1" action="/external/commentadd.aspx" method="post">
+			<h3 class="detailHdr2">
+				Add Comment (<span class="red">*</span> = required)</h3>
+			<div class="solset_addcomment">
+				
+					<fieldset class="clearfix">
+						<div class="first">
+							<p class="topspace">
+								<strong>Username:</strong> nuitinfo</p>
+						</div>
+						<div class="first">
+							<label for="comment">
+								<strong>Comment <span class="red">*</span></strong><br>
+								<textarea name="comment" id="comment" rows="10"></textarea>
+							</label>
+						</div>
+						<br><br>
+						<input id="modid" name="ceid" value="13820" type="hidden">
+						<span class="button"><input id="Submit1" value="Post Comment" type="submit"></span>
+					</fieldset>
+				
+				
+			</div>
+		</form>
+	</div>
+</div>&nbsp;</td>
+</tr>
+</tbody></table>
+
+
+
+<!-- End doc content -->
+<p>Copyright © 2009–2013 eBay, Inc. All rights reserved. This 
+documentation and the API may only be used in accordance with the eBay 
+Developers Program and API License Agreement.</p>
+<br><br><br><br>
+</div>
+
+<div style="display: none;" id="sidebarButton"></div>
+
+<div style="height: 522px;" id="sidebar">
+  <div id="tocnav"></div>
+</div>
+
+<!-- End bottom half divs -->
+</div>
+
+
+
+
+</body></html>
