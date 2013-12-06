@@ -36,46 +36,56 @@ class __TwigTemplate_7d152a2df9362a8b7baa31264b27b132e1f5b63137ed65d03bd78e2f95f
         // line 15
         echo "    <script src=\"/js-global/FancyZoom.js\" type=\"text/javascript\"></script>
     <script src=\"/js-global/FancyZoomHTML.js\" type=\"text/javascript\"></script>
+
+\t\t<!-- css for resize -->
+\t\t<link rel=\"stylesheet\" href=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/base/jquery-ui.css\">
+\t\t
+\t\t<!-- css for custom scrollbar -->
+\t\t<link href=\"../../../custom-scrollbar-plugin/jquery.mCustomScrollbar.css\" rel=\"stylesheet\"/>
+
+\t\t<!-- The initial stylesheet -->
+\t\t<link rel=\"stylesheet\" href=\"style.css\">
+
   </head>
   <body>
 
-\t<div id=\"header\" class=\"navbar-inner\">
+\t<div style=\"background: url('../img/fond-banniere.png'); background-position:right; background-repeat : no-repeat; background-color: #ffffff;\" id=\"header\" class=\"navbar-inner\">
 \t\t<div class=\"container\">
       \t<img src=\"../img/Toredo_logo_small.png\" alt=\"Toredo\" />
       \t<p> </p>
     <a href=\"";
-        // line 24
+        // line 34
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("PwebMain_accueil"), "html", null, true);
         echo "\" class=\"btn btn-inverse btn-large\"><i class=\"icon-white icon-home\"></i> Accueil</a>
 \t";
-        // line 25
+        // line 35
         if (($this->env->getExtension('security')->isGranted("ROLE_ADMIN") || $this->env->getExtension('security')->isGranted("ROLE_LAMBDA"))) {
-            // line 26
+            // line 36
             echo "<a href=\"";
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("PwebMain_utilisateur"), "html", null, true);
             echo "\" class=\"btn btn-info btn-large\"><i class=\"icon-white icon-th-list\"></i> Espace utilisateur</a>
 \t";
         } else {
-            // line 28
+            // line 38
             echo "    <a href=\"";
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("PwebMain_connecter"), "html", null, true);
             echo "\" class=\"btn btn-info btn-large\"><i class=\"icon-white icon-pencil\"></i> Se connecter</a>
 <a href=\"";
-            // line 29
+            // line 39
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("PwebMain_enregistrer"), "html", null, true);
             echo "\" class=\"btn btn-info btn-large\"><i class=\"icon-white icon-pencil\"></i> S'enregistrer</a>
 \t";
         }
-        // line 31
+        // line 41
         echo "\t";
         if (($this->env->getExtension('security')->isGranted("ROLE_ADMIN") || $this->env->getExtension('security')->isGranted("ROLE_LAMBDA"))) {
-            // line 32
+            // line 42
             echo "\t";
         } else {
-            // line 33
+            // line 43
             echo "\t";
         }
-        // line 34
+        // line 44
         echo "    <a href=\"";
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("PwebMain_apropos"), "html", null, true);
         echo "\" class=\"btn btn-info btn-large\"><i class=\"icon-white icon-pencil\"></i> A propos</a>
@@ -85,7 +95,7 @@ class __TwigTemplate_7d152a2df9362a8b7baa31264b27b132e1f5b63137ed65d03bd78e2f95f
     <br>
     <div class=\"container\">
 \t\t";
-        // line 40
+        // line 50
         if ($this->env->getExtension('security')->isGranted("ROLE_ADMIN")) {
             echo "  
 \t\t  
@@ -96,17 +106,17 @@ class __TwigTemplate_7d152a2df9362a8b7baa31264b27b132e1f5b63137ed65d03bd78e2f95f
      \t\t\t <ul class=\"nav\">
      \t\t\t <li> <a href=\"#\">[ADMINISTRATION]</a> </li>
    \t\t\t     <li> <a href=\"";
-            // line 48
+            // line 58
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("PwebMain_deconnecter"), "html", null, true);
             echo "\">Déconnecter</a> </li>
    \t\t\t     <li class=\"dropdown\"> <a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\"> Option 1 <b class=\"caret\"></b> </a>
    \t\t\t       <ul class=\"dropdown-menu\">
    \t\t\t         <li><a href=\"";
-            // line 51
+            // line 61
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("PwebMain_ajouter"), "html", null, true);
             echo "\">Option 1.1</a></li>
    \t\t\t         <li><a href=\"";
-            // line 52
+            // line 62
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("PwebMain_ajouterimage"), "html", null, true);
             echo "\">Option 1.2</a></li>
     \t\t      </ul>
@@ -114,17 +124,17 @@ class __TwigTemplate_7d152a2df9362a8b7baa31264b27b132e1f5b63137ed65d03bd78e2f95f
   \t\t\t      <li class=\"dropdown\"> <a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\"> Option 2 <b class=\"caret\"></b> </a>
    \t\t\t       <ul class=\"dropdown-menu\">
    \t\t\t         <li><a href=\"";
-            // line 57
+            // line 67
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("PwebMain_gererprojet"), "html", null, true);
             echo "\">Option 2.1</a></li>
    \t\t\t         <li><a href=\"";
-            // line 58
+            // line 68
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("PwebMain_voirimage"), "html", null, true);
             echo "\">Option 2.2</a></li>
     \t\t      </ul>
   \t\t\t      </li>
  \t\t       <li> <a href=\"";
-            // line 61
+            // line 71
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("PwebMain_statistiques"), "html", null, true);
             echo "\">Option 3</a> </li>
   \t\t       </ul>
@@ -135,15 +145,15 @@ class __TwigTemplate_7d152a2df9362a8b7baa31264b27b132e1f5b63137ed65d03bd78e2f95f
 
 \t ";
         }
-        // line 68
+        // line 78
         echo "\t
 \t\t 
 \t\t  
       
           ";
-        // line 72
+        // line 82
         $this->displayBlock('body', $context, $blocks);
-        // line 75
+        // line 85
         echo "</div>
     \t<div class=\"well\">
       <footer>
@@ -154,10 +164,39 @@ class __TwigTemplate_7d152a2df9362a8b7baa31264b27b132e1f5b63137ed65d03bd78e2f95f
     </div>
  
   ";
-        // line 84
+        // line 94
         $this->displayBlock('javascripts', $context, $blocks);
-        // line 89
-        echo " 
+        // line 99
+        echo "
+
+<!-- Jquery for resizeble -->
+\t\t<script src=\"../../../jQuery.js\"></script>
+\t\t<script src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js\"></script> 
+
+\t\t<!-- Jquery Custom scrollbar -->
+\t\t<script src=\"../../../custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js\"></script>
+\t\t<!-- Custom scrollbar -->
+\t   \t<script>
+\t\t(function(\$){
+\t\t\t\$(window).load(function(){
+\t\t\t\t\$(\".scrollbar\").mCustomScrollbar({
+\t\t\t\t\tautoHideScrollbar: false,
+\t\t\t\t\tcontentTouchScroll: true,//for mobile device
+\t\t\t\t\tscrollButtons:{
+\t\t\t\t\t\tenable:true
+\t\t\t\t\t}
+\t\t\t\t});
+\t\t\t});
+\t\t})(jQuery);
+\t\t</script>
+
+\t\t<!-- resizable classes -->
+\t\t<script>
+\t  \t\$(function() {
+\t    \t\$('.resizable').resizable();
+\t  \t\t});\t
+\t  </script>
+ 
   </body>
 </html>
 ";
@@ -195,23 +234,23 @@ class __TwigTemplate_7d152a2df9362a8b7baa31264b27b132e1f5b63137ed65d03bd78e2f95f
     ";
     }
 
-    // line 72
+    // line 82
     public function block_body($context, array $blocks = array())
     {
-        // line 73
+        // line 83
         echo "          
           ";
     }
 
-    // line 84
+    // line 94
     public function block_javascripts($context, array $blocks = array())
     {
-        // line 85
+        // line 95
         echo "    ";
-        // line 86
+        // line 96
         echo "    <script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 87
+        // line 97
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("js/bootstrap.js"), "html", null, true);
         echo "\"></script>
   ";
@@ -229,6 +268,6 @@ class __TwigTemplate_7d152a2df9362a8b7baa31264b27b132e1f5b63137ed65d03bd78e2f95f
 
     public function getDebugInfo()
     {
-        return array (  215 => 87,  212 => 86,  210 => 85,  207 => 84,  202 => 73,  199 => 72,  193 => 13,  189 => 12,  185 => 11,  181 => 10,  176 => 9,  173 => 8,  167 => 6,  160 => 89,  158 => 84,  147 => 75,  145 => 72,  139 => 68,  128 => 61,  122 => 58,  118 => 57,  110 => 52,  106 => 51,  100 => 48,  89 => 40,  79 => 34,  76 => 33,  73 => 32,  70 => 31,  65 => 29,  60 => 28,  54 => 26,  52 => 25,  48 => 24,  37 => 15,  35 => 8,  30 => 6,  23 => 1,);
+        return array (  254 => 97,  251 => 96,  249 => 95,  246 => 94,  241 => 83,  238 => 82,  232 => 13,  228 => 12,  224 => 11,  220 => 10,  215 => 9,  212 => 8,  206 => 6,  170 => 99,  168 => 94,  157 => 85,  155 => 82,  149 => 78,  138 => 71,  132 => 68,  128 => 67,  120 => 62,  116 => 61,  110 => 58,  99 => 50,  89 => 44,  86 => 43,  83 => 42,  80 => 41,  75 => 39,  70 => 38,  64 => 36,  62 => 35,  58 => 34,  37 => 15,  35 => 8,  30 => 6,  23 => 1,);
     }
 }

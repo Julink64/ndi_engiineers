@@ -35,7 +35,7 @@ function recherche(){
 		$title = $item->title;
 
 		// For each SearchResultItem node, build a link and append it to $results
-		$results .= "<tr><td><img src=\"$pic\"></td><td><a href=\"$link\">$title</a></td></tr>";
+		$results .= "<tr><td halign=\"center\" valign=\"center\" style=\"text-align: center;\"><img src=\"$pic\"></td><td><a href=\"$link\">$title</a></td></tr>";
 	  }
 	}
 	// If the response does not indicate 'Success,' print an error

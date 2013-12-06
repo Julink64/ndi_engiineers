@@ -55,7 +55,7 @@ class MainController extends Controller
 
   // Check to see if the request was successful, else print an error
   if ($resp->ack == "Success") {
-    $results = '<table>';
+    $results = '<table class="resizable scrollbar">';
     // If the response was loaded, parse it and build links
     foreach($resp->searchResult->item as $item) {
     $pic   = $item->galleryURL;
@@ -63,7 +63,7 @@ class MainController extends Controller
     $title = $item->title;
 
     // For each SearchResultItem node, build a link and append it to $results
-    $results .= "<tr><td><img src=\"$pic\"></td><td><a href=\"$link\">$title</a></td></tr>";
+    $results .= "<tr><td halign=\"center\" valign=\"center\" style=\"text-align: center;\"><img style=\"border: 2px solid white; margin-right : 20px; margin-top : 20px;\" src=\"$pic\"></td><td><a href=\"$link\">$title</a></td></tr>";
     }
   }
   // If the response does not indicate 'Success,' print an error

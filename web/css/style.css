@@ -1,5 +1,30 @@
-.classedetest
-{
-background-color : black;
-color: white;
+body{
+	/*background-color: pink;*/
+	background-color: #0084ff;
+
+}
+
+.class1{
+	
+	max-width: 30em;/*neccessary*/
+	width:100%;/*neccessary*/
+	min-width: 5em;/*neccessary*/
+	min-height: 10em;/*neccessary*/
+	height: 20em;
+	overflow:auto;
+	/*scroll bar*/
+
+
+}
+
+.class2{
+	
+	max-width: 20em;/*neccessary*/
+	width:100%;/*neccessary*/
+	min-width: 10em;/*neccessary*/
+	min-height: 10em;/*neccessary*/
+	height: 20em;
+	overflow:auto;
+	/*scroll bar*/
+
 }
