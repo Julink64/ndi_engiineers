@@ -19,6 +19,13 @@ PwebMain_cv:
 PwebMain_apropos:
     path:      /apropos
     defaults:  { _controller: PwebMainBundle:Main:apropos }
+    
+# ------------------------------------------------------------------------------
+# UTILISATEUR
+
+PwebMain_utilisateur:
+    path:      /utilisateur
+    defaults:  { _controller: PwebMainBundle:Main:utilisateur }
 
 # ------------------------------------------------------------------------------
 # GERER LES PROJETS
