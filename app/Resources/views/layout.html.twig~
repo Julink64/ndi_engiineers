@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>{% block title %}NI 2013{% endblock %}</title>
+ 
+    {% block stylesheets %}
+      <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}" type="text/css" />
+      <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" type="text/css">
+      <link rel="stylesheet" href="{{ asset('css/style.css') }}" type="text/css">
+    {% endblock %}
+    <script src="/js-global/FancyZoom.js" type="text/javascript"></script>
+    <script src="/js-global/FancyZoomHTML.js" type="text/javascript"></script>
+  </head>
+  <body>
+
+	<div id="header" class="navbar-inner">
+		<div class="container">
+      	<img src="../img/Toredo_logo_small.png" alt="Toredo" />
+      	<p> </p>
+    <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i> Accueil</a>
+	{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_LAMBDA') %}
+<a href="{{ path('PwebMain_utilisateur') }}" class="btn btn-info btn-large"><i class="icon-white icon-th-list"></i> Espace utilisateur</a>
+	{% else %}
+    <a href="{{ path('PwebMain_connecter') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> Se connecter</a>
+<a href="{{ path('PwebMain_enregistrer') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> S'enregistrer</a>
+	{% endif %}
+	{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_LAMBDA') %}
+	{% else %}
+	{% endif %}
+    <a href="{{ path('PwebMain_apropos') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> A propos</a>
+     	</div>
+     	<p> </p>
+    </div>
+    <br>
+    <div class="container">
+		{% if is_granted('ROLE_ADMIN') %}  
+		  
+   		  <div class="navbar">
+  			<div class="navbar-inner">
+  			  <div class="container">
+	
+     			 <ul class="nav">
+     			 <li> <a href="#">[ADMINISTRATION]</a> </li>
+   			     <li> <a href="{{ path('PwebMain_deconnecter') }}">Déconnecter</a> </li>
+   			     <li class="dropdown"> <a class="dropdown-toggle" data-toggle="dropdown" href="#"> Option 1 <b class="caret"></b> </a>
+   			       <ul class="dropdown-menu">
+   			         <li><a href="{{ path('PwebMain_ajouter') }}">Option 1.1</a></li>
+   			         <li><a href="{{ path('PwebMain_ajouterimage') }}">Option 1.2</a></li>
+    		      </ul>
+  			      </li>
+  			      <li class="dropdown"> <a class="dropdown-toggle" data-toggle="dropdown" href="#"> Option 2 <b class="caret"></b> </a>
+   			       <ul class="dropdown-menu">
+   			         <li><a href="{{ path('PwebMain_gererprojet') }}">Option 2.1</a></li>
+   			         <li><a href="{{ path('PwebMain_voirimage') }}">Option 2.2</a></li>
+    		      </ul>
+  			      </li>
+ 		       <li> <a href="{{ path('PwebMain_statistiques') }}">Option 3</a> </li>
+  		       </ul>
+
+    		</div>
+	</div>
+		  </div>
+
+	 {% endif %}	
+		 
+		  
+      
+          {% block body %}
+          
+          {% endblock %}
+</div>
+    	<div class="well">
+      <footer>
+      	<center>
+        <p>All rights reserved <b>Engiineers</b> © 2013</p>
+        </center>
+      </footer>
+    </div>
+ 
+  {% block javascripts %}
+    {# Fonctionnalités du bootstrap Twitter #}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
+  {% endblock %}
+ 
+  </body>
+</html>
