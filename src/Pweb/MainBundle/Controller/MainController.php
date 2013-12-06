@@ -39,6 +39,12 @@ class MainController extends Controller
     return $this->render('PwebMainBundle:Main:apropos.html.twig');
   }
   
+  public function utilisateurAction()
+  {
+	$user = $this->container->get('security.context')->getToken()->getUser();
+    return $this->render('PwebMainBundle:Main:utilisateur.html.twig', array('utilisateur'=>$user));
+  }
+  
   public function cvAction()
   {
   	$user = new Visiteur();

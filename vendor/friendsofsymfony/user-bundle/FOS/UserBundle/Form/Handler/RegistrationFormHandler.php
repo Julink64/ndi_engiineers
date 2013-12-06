@@ -41,6 +41,8 @@ class RegistrationFormHandler
     public function process($confirmation = false)
     {
         $user = $this->createUser();
+        $user->setPoints(1);
+	    $user->setListemots("Acheteur");
         $this->form->setData($user);
 
         if ('POST' === $this->request->getMethod()) {

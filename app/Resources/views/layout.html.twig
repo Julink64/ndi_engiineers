@@ -20,20 +20,27 @@
       	<h1 class="classedetest"> Nuit de l'info 2013 </h1>
       	<p> </p>
     <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i> Accueil</a>
+	{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_LAMBDA') %}
+<a href="{{ path('PwebMain_utilisateur') }}" class="btn btn-info btn-large"><i class="icon-white icon-th-list"></i> Espace utilisateur</a>
+	{% else %}
     <a href="{{ path('PwebMain_connecter') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> Se connecter</a>
-    <a href="{{ path('PwebMain_voirtout') }}" class="btn btn-info btn-large"><i class="icon-white icon-th-list"></i> Page 1</a>
-    <a href="{{ path('PwebMain_cv') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> Page 2</a>
-    <a href="{{ path('PwebMain_apropos') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> Page 3</a>
+<a href="{{ path('PwebMain_enregistrer') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> S'enregistrer</a>
+	{% endif %}
+	{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_LAMBDA') %}
+	{% else %}
+	{% endif %}
+    <a href="{{ path('PwebMain_apropos') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> A propos</a>
      	</div>
      	<p> </p>
     </div>
     <br>
     <div class="container">
-		  {% if is_granted('ROLE_ADMIN') %}
+		{% if is_granted('ROLE_ADMIN') %}  
 		  
    		  <div class="navbar">
   			<div class="navbar-inner">
   			  <div class="container">
+	
      			 <ul class="nav">
      			 <li> <a href="#">[ADMINISTRATION]</a> </li>
    			     <li> <a href="{{ path('PwebMain_deconnecter') }}">Déconnecter</a> </li>
@@ -51,15 +58,19 @@
   			      </li>
  		       <li> <a href="{{ path('PwebMain_statistiques') }}">Option 3</a> </li>
   		       </ul>
+
     		</div>
+	</div>
 		  </div>
-		</div>
-		  {% endif %}
+
+	 {% endif %}	
+		 
 		  
       
           {% block body %}
           
           {% endblock %}
+</div>
     	<div class="well">
       <footer>
       	<center>
